@@ -1,0 +1,130 @@
+# This file configures the analyzer, which statically analyzes Dart code to
+# check for errors, warnings, and lints.
+#
+# The issues identified by the analyzer are surfaced in the UI of Dart-enabled
+# IDEs (https://dart.dev/tools#ides-and-editors). The analyzer can also be
+# invoked from the command line by running `flutter analyze`.
+
+# The following line activates a set of recommended lints for Flutter apps,
+# packages, and plugins designed to encourage good coding practices.
+include: package:flutter_lints/flutter.yaml
+#include: package:lints/recommended.yaml
+
+linter:
+  # The lint rules applied to this project can be customized in the
+  # section below to disable rules from the `package:flutter_lints/flutter.yaml`
+  # included above or to enable additional rules. A list of all available lints
+  # and their documentation is published at https://dart.dev/lints.
+  #
+  # Instead of disabling a lint rule for the entire project in the
+  # section below, it can also be suppressed for a single line of code
+  # or a specific dart file by using the `// ignore: name_of_lint` and
+  # `// ignore_for_file: name_of_lint` syntax on the line or in the file
+  # producing the lint.
+  rules:
+      avoid_print: false # Uncomment to disable the `avoid_print` rule
+      prefer_single_quotes: true # Uncomment to enable the `prefer_single_quotes` rule
+      prefer_const_constructors: true # Uncomment to enable the `prefer_const_constructors` rule
+      prefer_const_declarations: true # Uncomment to enable the `prefer_const_declarations` rule
+      prefer_final_fields: true # Uncomment to enable the `prefer_final_fields` rule
+      always_declare_return_types: true # Uncomment to enable the `always_declare_return_types` rule
+      always_put_control_body_on_new_line: true # Uncomment to enable the `always_put_control_body_on_new_line` rule
+      always_put_required_named_parameters_first: true # Uncomment to enable the `always_put_required_named_parameters_first` rule
+      always_specify_types: true # Uncomment to enable the `always_specify_types` rule
+      always_use_package_imports: true # Uncomment to enable the `always_use_package_imports` rule
+      avoid_init_to_null: true # Uncomment to enable the `avoid_init_to_null` rule
+      avoid_positional_boolean_parameters: true # Uncomment to enable the `avoid_positional_boolean_parameters` rule
+      avoid_relative_lib_imports: true # Uncomment to enable the `avoid_relative_lib_imports` rule
+      avoid_types_as_parameter_names: true # Uncomment to enable the `avoid_types_as_parameter_names` rule
+      avoid_unnecessary_containers: true # Uncomment to enable the `avoid_unnecessary_containers` rule
+      avoid_unused_constructor_parameters: true # Uncomment to enable the `avoid_unused_constructor_parameters` rule
+      annotate_overrides: true # Uncomment to enable the `annotate_overrides` rule
+      avoid_function_literals_in_foreach_calls: true # Uncomment to enable the `avoid_function_literals_in_foreach_calls` rule
+      avoid_renaming_method_parameters: true # Uncomment to enable the `avoid_renaming_method_parameters` rule
+      avoid_return_types_on_setters: true # Uncomment to enable the `avoid_return_types_on_setters` rule
+      avoid_returning_null_for_void: true # Uncomment to enable the `avoid_returning_null_for_void` rule
+      avoid_single_cascade_in_expression_statements: true # Uncomment to enable the `avoid_single_cascade_in_expression_statements` rule
+      constant_identifier_names: true # Uncomment to enable the `constant_identifier_names` rule
+      empty_constructor_bodies: true # Uncomment to enable the `empty_constructor_bodies` rule
+      empty_statements: true # Uncomment to enable the `empty_statements` rule
+      implementation_imports: true # Uncomment to enable the `implementation_imports` rule
+      invalid_runtime_check_with_js_interop_types: true # Uncomment to enable the `invalid_runtime_check_with_js_interop_types` rule
+      library_prefixes: true # Uncomment to enable the `library_prefixes` rule
+      library_private_types_in_public_api: true # Uncomment to enable the `library_private_types_in_public_api` rule
+      no_leading_underscores_for_library_prefixes: true # Uncomment to enable the `no_leading_underscores_for_library_prefixes` rule
+      no_leading_underscores_for_local_identifiers: true # Uncomment to enable the `no_leading_underscores_for_local_identifiers` rule
+      null_closures: true # Uncomment to enable the `null_closures` rule
+      overridden_fields: true # Uncomment to enable the `overridden_fields` rule
+      package_names: true # Uncomment to enable the `package_names` rule
+      prefer_adjacent_string_concatenation: true # Uncomment to enable the `prefer_adjacent_string_concatenation` rule
+      prefer_collection_literals: true # Uncomment to enable the `prefer_collection_literals` rule
+      prefer_conditional_assignment: true # Uncomment to enable the `prefer_conditional_assignment` rule
+      prefer_contains: true # Uncomment to enable the `prefer_contains` rule
+      prefer_for_elements_to_map_fromIterable: true # Uncomment to enable the `prefer_for_elements_to_map_fromIterable` rule
+      prefer_function_declarations_over_variables: true # Uncomment to enable the `prefer_function_declarations_over_variables` rule
+      prefer_if_null_operators: true # Uncomment to enable the `prefer_if_null_operators` rule
+      prefer_initializing_formals: true # Uncomment to enable the `prefer_initializing_formals` rule
+      prefer_inlined_adds: true # Uncomment to enable the `prefer_inlined_adds` rule
+      prefer_interpolation_to_compose_strings: true # Uncomment to enable the `prefer_interpolation_to_compose_strings` rule
+      prefer_is_not_operator: true # Uncomment to enable the `prefer_is_not_operator` rule
+      prefer_null_aware_operators: true # Uncomment to enable the `prefer_null_aware_operators` rule
+      prefer_spread_collections: true
+      recursive_getters: true # Uncomment to enable the `recursive_getters` rule
+      slash_for_doc_comments: true # Uncomment to enable the `slash_for_doc_comments` rule
+      type_init_formals: true # Uncomment to enable the `type_init_formals` rule
+      unnecessary_brace_in_string_interps: true # Uncomment to enable the `unnecessary_brace_in_string_interps` rule
+      unnecessary_const: true # Uncomment to enable the `unnecessary_const` rule
+      unnecessary_constructor_name: true # Uncomment to enable the `unnecessary_constructor_name` rule
+      unnecessary_getters_setters: true # Uncomment to enable the `unnecessary_getters_setters` rule
+      unnecessary_late: true # Uncomment to enable the `unnecessary_late` rule
+      unnecessary_library_name: true # Uncomment to enable the `unnecessary_library_name` rule
+      unnecessary_new: true # Uncomment to enable the `unnecessary_new` rule
+      unnecessary_null_aware_assignments: true # Uncomment to enable the `unnecessary_null_aware_assignments` rule
+      unnecessary_null_in_if_null_operators: true # Uncomment to enable the `unnecessary_null_in_if_null_operators` rule
+      unnecessary_nullable_for_final_variable_declarations: true # Uncomment to enable the `unnecessary_nullable_for_final_variable_declarations` rule
+      unnecessary_string_escapes: true # Uncomment to enable the `unnecessary_string_escapes` rule
+      unnecessary_string_interpolations: true # Uncomment to enable the `unnecessary_string_interpolations` rule
+      unnecessary_this: true # Uncomment to enable the `unnecessary_this` rule
+      unnecessary_to_list_in_spreads: true # Uncomment to enable the `unnecessary_to_list_in_spreads` rule
+      unnecessary_underscores: true # Uncomment to enable the `unnecessary_underscores` rule
+      use_function_type_syntax_for_parameters: true # Uncomment to enable the `use_function_type_syntax_for_parameters` rule
+      use_rethrow_when_possible: true # Uncomment to enable the `use_rethrow_when_possible` rule
+      use_super_parameters: true # Uncomment to enable the `use_super_parameters` rule
+      file_names:
+        enforce_style: true # Uncomment to enable the `file_names` rule
+        enforce_lower_case_with_underscore: true # Uncomment to enable the `enforce_lower_case` rule
+      avoid_empty_else: true # Uncomment to enable the `avoid_empty_else` rule
+      avoid_shadowing_type_parameters: true # Uncomment to enable the `avoid_shadowing_type_parameters` rule
+      await_only_futures: true # Uncomment to enable the `await_only_futures` rule
+      camel_case_extensions: true # Uncomment to enable the `camel_case_extensions` rule
+      camel_case_types: true # Uncomment to enable the `camel_case_types` rule
+      collection_methods_unrelated_type: true # Uncomment to enable the `collection_methods_unrelated_type` rule
+      curly_braces_in_flow_control_structures: true
+      dangling_library_doc_comments: true
+      depend_on_referenced_packages: true
+      empty_catches: true
+      hash_and_equals: true
+      implicit_call_tearoffs: true
+      library_annotations: true
+      no_duplicate_case_values: true
+      no_wildcard_variable_uses: true
+      non_constant_identifier_names: true
+      null_check_on_nullable_type_parameter: true
+      prefer_generic_function_type_aliases: true
+      prefer_is_empty: true
+      prefer_is_not_empty: true
+      prefer_iterable_whereType: true
+      prefer_typing_uninitialized_variables: true
+      provide_deprecation_message: true
+      secure_pubspec_urls: true
+      strict_top_level_inference: true
+      type_literal_in_constant_pattern: true
+      unintended_html_in_doc_comment: true
+      unnecessary_overrides: true
+      unrelated_type_equality_checks: true
+      use_string_in_part_of_directives: true
+      valid_regexps: true
+      void_checks: true
+
+# Additional information about this file can be found at
+# https://dart.dev/guides/language/analysis-options

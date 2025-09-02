@@ -1,0 +1,85 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+
+jobs:
+  flutter:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'   # use 'beta' only if you truly need it
+          cache: true
+
+      - name: Dart/Flutter cache (pub)
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.pub-cache
+            **/.dart_tool
+          key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pub-
+
+      - name: Android Gradle cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            android/.gradle
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Flutter pub get
+        run: flutter pub get
+
+      # Run the same pre-commit as local (if you want a single source of truth)
+      - name: Run dart_pre_commit (CI mode)
+        run: dart run dart_pre_commit
+
+      # Stronger analyzer (fail on infos & warnings)
+      - name: Analyze
+        run: dart analyze --fatal-infos --fatal-warnings
+
+      # Enforce formatting (fail if anything would change)
+      - name: Format check
+        run: dart format --output=none --set-exit-if-changed .
+
+      # Run tests (unit/widget)
+      - name: Test
+        run: flutter test --reporter expanded
+
+      # Build web and upload as artifact (useful for previews)
+      - name: Build web
+        run: flutter build web --release
+
+      - name: Upload web build
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-build
+          path: build/web
+
+      # Build a debug APK (unsigned) for PR reviewers to sideload
+      - name: Build Android debug APK
+        run: flutter build apk --debug
+
+      - name: Upload debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-debug-apk
+          path: build/app/outputs/flutter-apk/app-debug.apk

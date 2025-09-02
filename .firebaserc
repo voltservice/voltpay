@@ -1,0 +1,8 @@
+{
+  "projects": {
+    "default": "micro-harbor-469912-u6",
+    "prod": "micro-harbor-469912-u6"
+  },
+  "targets": {},
+  "etags": {}
+}
