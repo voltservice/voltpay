@@ -1,0 +1,156 @@
+###############################################################################
+# Core normalization
+###############################################################################
+
+# Auto-detect text files and normalize to LF in the repo
+* text=auto eol=lf
+
+# Keep Windows batch scripts with CRLF so they run locally on Windows
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Shell scripts, Gradle scripts, and POSIX tools should stay LF
+*.sh   text eol=lf
+gradlew text eol=lf
+
+###############################################################################
+# Source files (treat as text with LF)
+###############################################################################
+*.dart  text eol=lf
+*.kt    text eol=lf
+*.kts   text eol=lf
+*.java  text eol=lf
+*.xml   text eol=lf
+*.gradle text eol=lf
+*.properties text eol=lf
+
+*.swift text eol=lf
+*.m     text eol=lf
+*.mm    text eol=lf
+*.h     text eol=lf
+*.hpp   text eol=lf
+*.c     text eol=lf
+*.cc    text eol=lf
+
+*.js    text eol=lf
+*.ts    text eol=lf
+*.tsx   text eol=lf
+*.jsx   text eol=lf
+
+*.yaml  text eol=lf
+*.yml   text eol=lf
+*.json  text eol=lf
+*.md    text eol=lf
+*.txt   text eol=lf
+
+###############################################################################
+# Generated code & metadata — keep diffs quiet on GitHub
+###############################################################################
+# Common Dart/Flutter generated files
+*.g.dart           linguist-generated=true
+*.freezed.dart     linguist-generated=true
+*.gen.dart         linguist-generated=true
+*.mocks.dart       linguist-generated=true
+
+# Build/Tool outputs (if they ever slip in)
+*.pb.dart          linguist-generated=true
+*.pbjson.dart      linguist-generated=true
+*.pbenum.dart      linguist-generated=true
+*.pbgrpc.dart      linguist-generated=true
+
+# Flutter/Gradle wrappers metadata
+.flutter-plugins               linguist-generated=true
+.flutter-plugins-dependencies  linguist-generated=true
+.packages                      linguist-generated=true
+
+###############################################################################
+# iOS / Xcode project merge friendliness
+###############################################################################
+# Xcode project files tend to conflict; union merge can reduce churn
+*.pbxproj merge=union
+*.xcworkspacedata text eol=lf
+*.xcsettings      text eol=lf
+*.xcscheme        text eol=lf
+
+###############################################################################
+# Android / Gradle
+###############################################################################
+# Wrapper binaries should be treated as binary
+gradle/wrapper/gradle-wrapper.jar binary
+
+###############################################################################
+# Firebase & Cloud Functions
+###############################################################################
+# Treat function bundles as text unless minified
+functions/**/*.js  text eol=lf
+functions/**/*.ts  text eol=lf
+functions/package-lock.json text eol=lf
+functions/yarn.lock         text eol=lf
+
+# Firestore/Storage rules and indexes are text
+firestore.rules          text eol=lf
+firestore.indexes.json   text eol=lf
+storage.rules            text eol=lf
+database.rules.json      text eol=lf
+firebase.json            text eol=lf
+.firebaserc              text eol=lf
+
+###############################################################################
+# Lockfiles (keep stable line endings for reproducible installs)
+###############################################################################
+pubspec.lock        text eol=lf
+package-lock.json   text eol=lf
+yarn.lock           text eol=lf
+pnpm-lock.yaml      text eol=lf
+gradle.lockfile     text eol=lf
+Podfile.lock        text eol=lf
+Gemfile.lock        text eol=lf
+
+###############################################################################
+# Binary assets (no line-ending normalization)
+###############################################################################
+# Images
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.webp binary
+*.svg  text   # SVG is XML; diffable
+
+# Fonts
+*.ttf  binary
+*.otf  binary
+*.woff binary
+*.woff2 binary
+
+# Archives / packs
+*.zip  binary
+*.tar  binary
+*.gz   binary
+*.7z   binary
+
+# Android / iOS binary artifacts
+*.so   binary
+*.a    binary
+*.jar  binary
+*.aar  binary
+*.keystore binary
+*.jks     binary
+*.ipa     binary
+*.dSYM    binary
+
+# PDFs and other docs
+*.pdf  binary
+*.doc  binary
+*.docx binary
+*.xls  binary
+*.xlsx binary
+*.ppt  binary
+*.pptx binary
+
+###############################################################################
+# GitHub Linguist tweaks (optional)
+###############################################################################
+# If Pods are committed, keep them out of language stats noise
+ios/Pods/** linguist-vendored
+android/.cxx/** linguist-vendored

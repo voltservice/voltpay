@@ -1,75 +1,124 @@
-# Miscellaneous
-*.class
-*.log
-*.pyc
-*.swp
-.DS_Store
-.atom/
-.build/
-.buildlog/
-.history
-.svn/
-.swiftpm/
-migrate_working_dir/
-
-# IntelliJ related
-*.iml
-*.ipr
-*.iws
-.idea/
-
-# The .vscode folder contains launch configuration and tasks you configure in
-# VS Code which you may wish to be included in version control, so this line
-# is commented out by default.
-#.vscode/
-
-# Flutter/Dart/Pub related
-**/doc/api/
-**/ios/Flutter/.last_build_id
-.dart_tool/
+################################################################################
+# Flutter / Dart
+################################################################################
+# Build outputs
+build/
+.flutter-plugins
 .flutter-plugins-dependencies
+.dart_tool/
+.packages
 .pub-cache/
 .pub/
-/build/
-/coverage/
-
-# Symbolication related
-app.*.symbols
-
-# Obfuscation related
-app.*.map.json
-
-# Android Studio will place build artifacts here
-/android/app/debug
-/android/app/profile
-/android/app/release
-
-# Flutter/Dart
-.packages
-build/
 coverage/
-pubspec.lock        # commit only for apps, ignore for packages (optional)
+*.log
 
-# Android
-android/.gradle/
-android/local.properties
-android/key.properties
-**/*.keystore
-**/*.jks
+# Generated files
+*.g.dart
+*.freezed.dart
+*.mocks.dart
+*.gen.dart
+*.pb.dart
+*.pbjson.dart
+*.pbenum.dart
+*.pbgrpc.dart
 
-# iOS
-ios/Pods/
-ios/.symlinks/
-ios/Flutter/Generated.xcconfig
-ios/Flutter/flutter_export_environment.sh
-
-# Firebase (keep client-safe files, ignore service creds)
-# firebase_options.dart is OK to commit for client apps.
-# Ignore private service JSONs if any:
-**/*-service-account*.json
-
-# Env & tooling
-.env
-.env.*
-.melos_tool/
+# IDE / local settings
+.idea/
 .vscode/
+*.iml
+
+################################################################################
+# Firebase
+################################################################################
+# Local Firebase emulators & caches
+.firebase/
+*.firebaserc.local
+
+# Credentials / service accounts
+cert/
+*.key
+*.pem
+*.p12
+*.jks
+*.keystore
+
+# Explicit local certs folder
+C:/Users/Metal/voltpay/cert
+# Also ignore relative path if cloned elsewhere
+
+voltpay_lm_feature/
+
+################################################################################
+# Android
+################################################################################
+# Gradle
+.gradle/
+local.properties
+gradle-app.setting
+
+# Android build outputs
+**/android/**/build/
+**/android/**/.cxx/
+**/android/**/captures/
+
+# Keystore files (already ignored above under cert/)
+*.apk
+*.ap_
+
+################################################################################
+# iOS / macOS
+################################################################################
+# Xcode
+**/ios/Pods/
+**/ios/DerivedData/
+**/ios/.generated/
+**/ios/Flutter/Flutter.framework/
+**/ios/Flutter/Flutter.podspec
+**/ios/.symlinks/
+**/ios/profile
+**/ios/xcuserdata/
+**/ios/.flutter-plugins
+**/ios/.flutter-plugins-dependencies
+
+# macOS
+**/macos/Pods/
+**/macos/DerivedData/
+
+# Output
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+################################################################################
+# Firebase Functions (Node.js / TS)
+################################################################################
+functions/node_modules/
+functions/lib/
+functions/dist/
+functions/.env
+functions/.env.local
+functions/npm-debug.log
+functions/yarn-error.log
+
+################################################################################
+# Web
+################################################################################
+web/.dart_tool/
+web/build/
+
+################################################################################
+# OS generated files
+################################################################################
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Icon?
+desktop.ini
+
+################################################################################
+# Lock files (commit the main ones for reproducibility)
+################################################################################
+# Ignore local overrides, keep main lockfiles
+package-lock.json
+yarn.lock
+pnpm-lock.yaml

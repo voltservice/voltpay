@@ -69,7 +69,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '1018663726434',
     projectId: 'micro-harbor-469912-u6',
     storageBucket: 'micro-harbor-469912-u6.firebasestorage.app',
-    androidClientId: '1018663726434-l2uc63ilinvrma2s3fk7rivit3rv18o9.apps.googleusercontent.com',
+    androidClientId:
+        '1018663726434-l2uc63ilinvrma2s3fk7rivit3rv18o9.apps.googleusercontent.com',
     iosBundleId: 'net.metalbrain.voltpay',
   );
 }
