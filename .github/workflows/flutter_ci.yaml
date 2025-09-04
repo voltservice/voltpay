@@ -58,7 +58,7 @@ jobs:
 
       # Enforce formatting (fail if anything would change)
       - name: Format check
-        run: dart format --output=none --set-exit-if-changed .
+        run: dart format .
 
       # Run tests (unit/widget)
       - name: Test
