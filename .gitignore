@@ -89,6 +89,10 @@ gradle-app.setting
 *.dSYM.zip
 *.dSYM
 
+android/app/google-services.json
+/google-services.json
+**/google-services.json
+
 ################################################################################
 # Firebase Functions (Node.js / TS)
 ################################################################################
