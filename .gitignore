@@ -93,6 +93,11 @@ android/app/google-services.json
 /google-services.json
 **/google-services.json
 
+# Node lockfile in functions (if you want it ignored)
+functions/package-lock.json
+
+lib/firebase_options.dart
+
 ################################################################################
 # Firebase Functions (Node.js / TS)
 ################################################################################
