@@ -2,6 +2,13 @@
 import 'dart:io';
 
 void main() {
+  run('Generate mocks', <String>[
+    'dart',
+    'run',
+    'build_runner',
+    'build',
+    '--delete-conflicting-outputs',
+  ]);
   run('Analyze', <String>['flutter', 'analyze']);
   run('Run tests', <String>[
     'flutter',

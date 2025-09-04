@@ -48,6 +48,9 @@ jobs:
       - name: Flutter pub get
         run: flutter pub get
 
+      - name: Generate mocks
+        run: dart run build_runner build --delete-conflicting-outputs
+
       # Run the same pre-commit as local (if you want a single source of truth)
       - name: Run dart_pre_commit (CI mode)
         run: dart run dart_pre_commit
