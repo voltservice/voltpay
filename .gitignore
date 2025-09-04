@@ -132,3 +132,7 @@ desktop.ini
 package-lock.json
 yarn.lock
 pnpm-lock.yaml
+
+android/app/google-services.json
+**/google-services.json
+**/GoogleService-Info.plist
