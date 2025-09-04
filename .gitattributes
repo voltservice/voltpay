@@ -115,7 +115,7 @@ Gemfile.lock        text eol=lf
 *.jpeg binary
 *.gif  binary
 *.webp binary
-*.svg  text   # SVG is XML; diffable
+*.svg  text
 
 # Fonts
 *.ttf  binary
