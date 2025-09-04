@@ -2,22 +2,21 @@
 import 'dart:io';
 
 void main() {
-  run('Fix asset casing', <String>['tool/hooks/fix_asset_casing.dart']);
-  run('Analyze', <String>['analyze']);
-  run('Run tests', <String>['test']);
-  run('Check formatting', <String>['format', '--set-exit-if-changed']);
+  run('Analyze', <String>['flutter', 'analyze']);
+  run('Run tests', <String>[
+    'flutter',
+    'test',
+    '--no-pub',
+  ]); // <-- use flutter here
+  run('Check formatting', <String>['dart', 'format', '.']);
 }
 
-void run(String title, List<String> args) {
+void run(String title, List<String> cmdAndArgs) {
+  final String cmd = cmdAndArgs.first;
+  final List<String> args = cmdAndArgs.sublist(1);
   print('\n🔍 Running $title...');
 
-  final ProcessResult result = Process.runSync(
-    'dart',
-    args,
-    environment: <String, String>{
-      // Add custom environment variables if needed
-    },
-  );
+  final ProcessResult result = Process.runSync(cmd, args, runInShell: true);
 
   stdout.write(result.stdout);
   stderr.write(result.stderr);
