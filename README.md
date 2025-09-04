@@ -1,16 +1,19 @@
-# voltpay
+# VoltPay
 
-A new Flutter project.
+VoltPay is a Flutter-powered fintech app built to deliver seamless payments, transfers, and financial services across platforms.
 
-## Getting Started
+This repository contains the **mobile client** (Android & iOS) and **web app**, integrated with Firebase for authentication, data, and hosting.
 
-This project is a starting point for a Flutter application.
+## Features
+- Secure sign-in & onboarding
+- Real-time Firestore integration
+- Multi-platform (Android, iOS, Web)
+- Production setup with restricted API keys and App Check
 
-A few resources to get you started if this is your first Flutter project:
+## Development
+Clone and run locally:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+```bash
+flutter pub get
+flutter run -t lib/main.dart
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.

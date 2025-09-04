@@ -90,8 +90,9 @@ gradle-app.setting
 *.dSYM
 
 android/app/google-services.json
-/google-services.json
+ios/Runner/GoogleService-Info.plist
 **/google-services.json
+**/GoogleService-Info.plist
 
 # Node lockfile in functions (if you want it ignored)
 functions/package-lock.json
