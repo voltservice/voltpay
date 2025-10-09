@@ -1,0 +1,9 @@
+{
+  "extends": [
+    "development",
+    "accessible",
+    "performance",
+    "seo",
+    "best-practice"
+  ]
+}

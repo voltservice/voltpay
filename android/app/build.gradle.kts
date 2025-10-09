@@ -43,7 +43,7 @@ android {
         applicationId = "net.metalbrain.voltpay"
         minSdk = 24
         targetSdk = 36
-        versionCode = 1
+        versionCode = 3
         versionName = "1.0.0"
     }
 
@@ -85,8 +85,14 @@ dependencies {
     // Google Sign-In
     implementation("com.google.android.gms:play-services-auth:21.4.0")
 
+    // Facebook login
+    implementation("com.facebook.android:facebook-login:latest.release")
+
     // AndroidX Credentials (your versions)
     implementation("androidx.credentials:credentials:1.6.0-alpha05")
+    implementation("androidx.credentials:credentials:1.3.0")
+    implementation("androidx.credentials:credentials-play-services-auth:1.3.0")
+    implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
     implementation("androidx.credentials:credentials-play-services-auth:1.6.0-alpha05")
 }
 

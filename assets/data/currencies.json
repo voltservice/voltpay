@@ -1,0 +1,21 @@
+[
+  { "code": "EUR", "name": "Euro", "flag": "🇪🇺", "popular": true },
+  { "code": "GBP", "name": "British pound", "flag": "🇬🇧", "popular": true },
+  { "code": "INR", "name": "Indian rupee", "flag": "🇮🇳", "popular": true },
+
+  { "code": "AED", "name": "United Arab Emirates dirham", "flag": "🇦🇪" },
+  { "code": "AUD", "name": "Australian dollar", "flag": "🇦🇺" },
+  { "code": "CAD", "name": "Canadian dollar", "flag": "🇨🇦" },
+  { "code": "CHF", "name": "Swiss franc", "flag": "🇨🇭" },
+  { "code": "CNY", "name": "Chinese yuan", "flag": "🇨🇳" },
+  { "code": "JPY", "name": "Japanese yen", "flag": "🇯🇵" },
+  { "code": "KES", "name": "Kenyan shilling", "flag": "🇰🇪" },
+  { "code": "NGN", "name": "Nigerian naira", "flag": "🇳🇬" },
+  { "code": "NOK", "name": "Norwegian krone", "flag": "🇳🇴" },
+  { "code": "SEK", "name": "Swedish krona", "flag": "🇸🇪" },
+  { "code": "USD", "name": "US dollar", "flag": "🇺🇸" },
+  { "code": "ZAR", "name": "South African rand", "flag": "🇿🇦" },
+  { "code": "ZWD", "name": "Zimbabwean dollar", "flag": "🇿🇼" },
+  { "code": "RUB", "name": "Russian ruble", "flag": "🇷🇺" },
+  { "code": "TRY", "name": "Turkish lira", "flag": "🇹🇷" }
+]

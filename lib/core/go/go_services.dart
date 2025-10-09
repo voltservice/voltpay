@@ -30,9 +30,16 @@ class _GoTestScreenState extends State<GoTestScreen> {
   Widget build(BuildContext context) {
     final ColorScheme scheme = Theme.of(context).colorScheme;
     return Scaffold(
-      backgroundColor: scheme.onSurface,
-      appBar: AppBar(title: const Text('Go Backend API Test')),
-      body: Center(child: Text(message)),
+      backgroundColor: scheme.surface,
+      body: Center(
+        child: Text(
+          message,
+          style: Theme.of(context).textTheme.titleLarge,
+          softWrap: true,
+          textAlign: TextAlign.center,
+          maxLines: 2,
+        ),
+      ),
     );
   }
 }

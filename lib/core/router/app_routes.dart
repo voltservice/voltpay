@@ -1,1 +1,17 @@
-enum AppRoute { splash, go }
+enum AppRoute {
+  splash,
+  go,
+  home,
+  cards,
+  recipients,
+  payments,
+  flow,
+  onboarding,
+  remit,
+  send,
+  boost,
+  rate,
+  emailEntry,
+  emailVerification,
+  service,
+}

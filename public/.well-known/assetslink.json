@@ -1,0 +1,11 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "net.metalbrain.voltpay",
+      "sha256_cert_fingerprints":
+        ["49:63:23:EB:EA:16:BC:38:33:36:02:8C:BF:17:93:C9:73:B2:3E:72:7F:06:B4:AB:5A:2C:00:D7:D3:B5:2C:5E"]
+    }
+  }
+]

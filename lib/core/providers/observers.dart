@@ -1,15 +1,24 @@
 // lib/core/providers/observers.dart
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class AppProviderObserver extends ProviderObserver {
+base class AppProviderObserver extends ProviderObserver {
   @override
   void didUpdateProvider(
-    ProviderBase<dynamic> provider,
+    ProviderObserverContext context,
     Object? previousValue,
     Object? newValue,
-    ProviderContainer container,
   ) {
-    // Add structured logging if you want
-    // debugPrint('[PROVIDER] ${provider.name ?? provider.runtimeType} -> $next');
+    // You can inspect:
+    // context.provider        -> the provider that changed
+    // context.container       -> the ProviderContainer
+    // context.container.hash  -> container identity
+    // context.name / runtimeType etc.
+
+    // Example: simple debug log
+    debugPrint(
+      '[Provider Updated] ${context.provider.name ?? context.provider.runtimeType} '
+      'from $previousValue to $newValue',
+    );
   }
 }

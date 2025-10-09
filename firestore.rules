@@ -1,8 +1,73 @@
-rules_version='2'
+rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /{document=**} {
-      allow read, write: if request.time < timestamp.date(2025, 9, 30);
+
+    function isSignedIn() { return request.auth != null; }
+    function isSelf(uid) { return isSignedIn() && request.auth.uid == uid; }
+    function isString(v) { return v is string; }
+    function isBool(v)   { return v is bool; }
+    function isTimestamp(v) { return v is timestamp; }
+    function looksLikeUrl(s) { return isString(s) && s.size() <= 2048 && s.matches('^https?://.+'); }
+    function validDisplayNameMaybe(s) { return !(s is string) || (s.size() > 0 && s.size() <= 80); }
+    function emailMatchesAuth(email) {
+      return !(request.auth.token.email is string) ||
+             (email is string && email.lower() == request.auth.token.email.lower());
     }
+    function isServerTimeWrite(ts) { return isTimestamp(ts); }
+    function onlyAllowedFields(allowed) { return request.resource.data.keys().hasOnly(allowed); }
+    function unchanged(field) { return request.resource.data[field] == resource.data[field]; }
+    function validUserStatus(s) { return s in ['unverified','verified','kycPending']; }
+
+    match /users/{uid} {
+      allow read: if isSelf(uid);
+
+      allow create: if isSelf(uid)
+        && onlyAllowedFields([
+          'authProvider','createdAt','displayName','email','emailVerified',
+          'isAnonymous','lastSignedIn','photoURL','phoneNumber',
+          'tenantId','providerIds','status'
+        ])
+        && request.resource.data.authProvider in ['facebook','google','apple','password']
+        && emailMatchesAuth(request.resource.data.email)
+        && isBool(request.resource.data.emailVerified)
+        && isBool(request.resource.data.isAnonymous)
+        && validUserStatus(request.resource.data.status)
+        && (request.resource.data.providerIds is list
+            && request.resource.data.providerIds.size() <= 10)
+        && isServerTimeWrite(request.resource.data.createdAt)
+        && isServerTimeWrite(request.resource.data.lastSignedIn)
+        && validDisplayNameMaybe(request.resource.data.displayName)
+        && (!('photoURL' in request.resource.data) || looksLikeUrl(request.resource.data.photoURL));
+
+      allow update: if isSelf(uid)
+        && onlyAllowedFields([
+          'authProvider','displayName','email','emailVerified','isAnonymous',
+          'isOnboarded','lastSignedIn','photoURL','phoneNumber','tenantId',
+          'providerIds','status'
+        ])
+        && unchanged('createdAt')
+        && emailMatchesAuth(request.resource.data.email)
+        && request.resource.data.authProvider in ['facebook','google','apple','password']
+        && isBool(request.resource.data.emailVerified)
+        && isBool(request.resource.data.isAnonymous)
+        && isBool(request.resource.data.isOnboarded)
+        && validUserStatus(request.resource.data.status)
+        && (request.resource.data.providerIds is list
+            && request.resource.data.providerIds.size() <= 10)
+        && isServerTimeWrite(request.resource.data.lastSignedIn)
+        && validDisplayNameMaybe(request.resource.data.displayName)
+        && (!('photoURL' in request.resource.data) || looksLikeUrl(request.resource.data.photoURL));
+
+      allow delete: if isSelf(uid);
+    }
+
+    match /auth_links/{doc} { allow read, write: if false; }
+    match /userProviders/{uid} {
+      allow read: if isSelf(uid);
+      allow write: if false;
+      match /linked/{providerId} { allow read: if isSelf(uid); allow write: if false; }
+    }
+    match /deletion_logs/{doc} { allow read, write: if false; }
+    match /audit/{doc}         { allow read, write: if false; }
   }
 }

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="facebook_app_id">1278733727069384</string>
+    <string name="fb_login_protocol_scheme">fb1278733727069384</string>
+    <string name="facebook_client_token">0c90c47262520d4b4e8429874b8a94f7</string>
+    <string name="app_name">voltpay</string>
+</resources>
