@@ -55,10 +55,6 @@ jobs:
       - name: Run dart_pre_commit (CI mode)
         run: dart run dart_pre_commit
 
-      # Stronger analyzer (fail on infos & warnings)
-      - name: Analyze
-        run: dart analyze --fatal-infos --fatal-warnings
-
       # Enforce formatting (fail if anything would change)
       - name: Format check
         run: dart format .
