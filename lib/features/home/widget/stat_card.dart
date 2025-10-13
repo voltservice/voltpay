@@ -38,16 +38,16 @@ class StatCard extends StatelessWidget {
                 Text(
                   title,
                   style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                        color: fg.withCustomOpacity(.8),
-                      ),
+                    color: fg.withCustomOpacity(.8),
+                  ),
                 ),
                 const SizedBox(height: 6),
                 Text(
                   subtitle,
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.w900,
-                        color: fg,
-                      ),
+                    fontWeight: FontWeight.w900,
+                    color: fg,
+                  ),
                 ),
               ],
             ),

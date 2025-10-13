@@ -26,15 +26,17 @@ class GoogleSignInProvider implements ISignInProvider {
     if (kIsWeb) {
       final fb.GoogleAuthProvider webProvider = fb.GoogleAuthProvider();
       if (webClientId != null) {
-        webProvider
-            .setCustomParameters(<dynamic, dynamic>{'client_id': webClientId!});
+        webProvider.setCustomParameters(<dynamic, dynamic>{
+          'client_id': webClientId!,
+        });
       }
       throw WebProviderRequired(webProvider);
     }
 
     _googleSignIn.initialize(
-        serverClientId:
-            '1018663726434-v2t5nm4npt6taf2j51pp9oaiit89k958.apps.googleusercontent.com');
+      serverClientId:
+          '1018663726434-v2t5nm4npt6taf2j51pp9oaiit89k958.apps.googleusercontent.com',
+    );
 
     // ✅ Native (Android/iOS/macOS)
     final GoogleSignInAccount account = await _googleSignIn.authenticate();
@@ -47,9 +49,7 @@ class GoogleSignInProvider implements ISignInProvider {
       throw const SignInAborted('Missing Google ID Token.');
     }
 
-    return fb.GoogleAuthProvider.credential(
-      idToken: auth.idToken,
-    );
+    return fb.GoogleAuthProvider.credential(idToken: auth.idToken);
   }
 }
 

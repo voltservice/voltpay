@@ -22,7 +22,8 @@ class FeeRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Widget right = rightWidget ??
+    final Widget right =
+        rightWidget ??
         (rightLinkText != null
             ? GestureDetector(
                 onTap: onRightTap,

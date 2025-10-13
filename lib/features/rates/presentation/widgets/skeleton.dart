@@ -7,14 +7,14 @@ class Skeleton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Widget bar(double w) => Container(
-          height: 16,
-          width: w,
-          margin: const EdgeInsets.symmetric(vertical: 6),
-          decoration: BoxDecoration(
-            color: scheme.onSurfaceVariant,
-            borderRadius: BorderRadius.circular(4),
-          ),
-        );
+      height: 16,
+      width: w,
+      margin: const EdgeInsets.symmetric(vertical: 6),
+      decoration: BoxDecoration(
+        color: scheme.onSurfaceVariant,
+        borderRadius: BorderRadius.circular(4),
+      ),
+    );
     return Column(
       children: <Widget>[
         bar(240),

@@ -16,12 +16,12 @@ abstract class PaymentMethodOption with _$PaymentMethodOption {
 
   // Presets (optional convenience constructors)
   factory PaymentMethodOption.wire() => const PaymentMethodOption(
-        type: PaymentMethodType.wire,
-        title: 'Wire Transfer',
-        subtitle: '6.11 USD fee, should arrive by Thursday',
-        fixedFee: 6.11,
-        available: true,
-      );
+    type: PaymentMethodType.wire,
+    title: 'Wire Transfer',
+    subtitle: '6.11 USD fee, should arrive by Thursday',
+    fixedFee: 6.11,
+    available: true,
+  );
 
   factory PaymentMethodOption.fromJson(Map<String, dynamic> json) =>
       _$PaymentMethodOptionFromJson(json);

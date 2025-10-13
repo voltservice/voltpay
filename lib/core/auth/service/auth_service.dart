@@ -7,7 +7,7 @@ import 'package:voltpay/core/auth/provider/web_provider.dart';
 
 class AuthService {
   AuthService(this._repo, {List<AuthHook>? hooks})
-      : _hooks = hooks ?? const <AuthHook>[];
+    : _hooks = hooks ?? const <AuthHook>[];
   final IAuthRepository _repo;
   final List<AuthHook> _hooks;
 

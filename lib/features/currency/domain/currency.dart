@@ -12,9 +12,9 @@ class Currency {
   });
 
   factory Currency.fromJson(Map<String, dynamic> j) => Currency(
-        code: j['code'] as String,
-        name: j['name'] as String,
-        flag: j['flag'] as String,
-        popular: (j['popular'] as bool?) ?? false,
-      );
+    code: j['code'] as String,
+    name: j['name'] as String,
+    flag: j['flag'] as String,
+    popular: (j['popular'] as bool?) ?? false,
+  );
 }

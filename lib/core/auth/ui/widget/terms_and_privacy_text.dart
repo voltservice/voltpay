@@ -18,8 +18,8 @@ class TermsAndPrivacyText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final TextStyle base = Theme.of(context).textTheme.bodySmall!.copyWith(
-          color: Theme.of(context).colorScheme.outline,
-        );
+      color: Theme.of(context).colorScheme.outline,
+    );
 
     final TextStyle link = base.copyWith(
       decoration: TextDecoration.underline,

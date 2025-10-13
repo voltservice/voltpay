@@ -3,5 +3,5 @@ import 'package:voltpay/features/rates/infrastructure/payment_method_repository.
 
 final Provider<PaymentMethodRepository> paymentMethodRepoProvider =
     Provider<PaymentMethodRepository>(
-  (Ref ref) => InMemoryPaymentMethodRepository(),
-);
+      (Ref ref) => InMemoryPaymentMethodRepository(),
+    );

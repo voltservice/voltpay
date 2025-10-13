@@ -10,8 +10,8 @@ import 'package:voltpay/features/rates/infrastructure/quote_repository.dart';
 
 class HttpQuoteRepository implements QuoteRepository {
   HttpQuoteRepository({ApiConfig? config, http.Client? client})
-      : _config = config ?? ApiConfig(Env.apiBase),
-        _client = client ?? http.Client();
+    : _config = config ?? ApiConfig(Env.apiBase),
+      _client = client ?? http.Client();
 
   final ApiConfig _config;
   final http.Client _client;

@@ -17,8 +17,9 @@ class CountryNotifier extends _$CountryNotifier {
   @override
   FutureOr<CountryState> build() async {
     try {
-      final String raw =
-          await rootBundle.loadString('assets/data/countries.json');
+      final String raw = await rootBundle.loadString(
+        'assets/data/countries.json',
+      );
 
       final List<Country> list = (json.decode(raw) as List<dynamic>)
           .map((dynamic e) => Country.fromJson(e as Map<String, dynamic>))
@@ -41,11 +42,7 @@ class CountryNotifier extends _$CountryNotifier {
         WidgetsBinding.instance.platformDispatcher.locale,
       );
 
-      return CountryState(
-        countries: list,
-        selected: selected,
-        loading: false,
-      );
+      return CountryState(countries: list, selected: selected, loading: false);
     } catch (e) {
       return CountryState(loading: false, error: e.toString());
     }

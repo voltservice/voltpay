@@ -59,11 +59,11 @@ class EmailEntryScreen extends ConsumerWidget {
                     alignment: Alignment.centerLeft,
                     child: Text(
                       title,
-                      style:
-                          Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                fontWeight: FontWeight.w800,
-                                letterSpacing: -0.2,
-                              ),
+                      style: Theme.of(context).textTheme.headlineSmall
+                          ?.copyWith(
+                            fontWeight: FontWeight.w800,
+                            letterSpacing: -0.2,
+                          ),
                     ),
                   ),
 
@@ -75,9 +75,9 @@ class EmailEntryScreen extends ConsumerWidget {
                     child: Text(
                       label,
                       style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                            color: scheme.onSurface.withCustomOpacity(0.8),
-                            fontWeight: FontWeight.w600,
-                          ),
+                        color: scheme.onSurface.withCustomOpacity(0.8),
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
 
@@ -93,8 +93,9 @@ class EmailEntryScreen extends ConsumerWidget {
                     onChanged: ref.read(emailFormProvider.notifier).setEmail,
                     decoration: InputDecoration(
                       hintText: 'name@example.com',
-                      errorText:
-                          showError ? 'Enter a valid email address' : null,
+                      errorText: showError
+                          ? 'Enter a valid email address'
+                          : null,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),

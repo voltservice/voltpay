@@ -56,7 +56,7 @@ class _OnboardingFlowState extends State<OnboardingFlow> {
   // Build pages via factories so totalSteps = factories.length (auto-increments).
   late final List<Widget Function(int total, int active)> _pageFactories =
       <Widget Function(int total, int active)>[
-    (int total, int active) => OnboardingInitialScreen(
+        (int total, int active) => OnboardingInitialScreen(
           totalSteps: total,
           stepIndex: 0,
           isActive: active == 0,
@@ -67,7 +67,7 @@ class _OnboardingFlowState extends State<OnboardingFlow> {
           onGetStarted: _next,
           onAutoNext: _next,
         ),
-    (int total, int active) => OnboardingRemitScreen(
+        (int total, int active) => OnboardingRemitScreen(
           totalSteps: total,
           stepIndex: 1,
           isActive: active == 1,
@@ -77,7 +77,7 @@ class _OnboardingFlowState extends State<OnboardingFlow> {
           onGetStarted: _next,
           onAutoNext: _next,
         ),
-    (int total, int active) => OnboardingSendNEarnScreen(
+        (int total, int active) => OnboardingSendNEarnScreen(
           totalSteps: total,
           stepIndex: 2,
           isActive: active == 2,
@@ -87,7 +87,7 @@ class _OnboardingFlowState extends State<OnboardingFlow> {
           onGetStarted: _next,
           onAutoNext: _next,
         ),
-    (int total, int active) => OnboardingBoostScreen(
+        (int total, int active) => OnboardingBoostScreen(
           totalSteps: total,
           stepIndex: 3,
           isActive: active == 3,
@@ -98,7 +98,7 @@ class _OnboardingFlowState extends State<OnboardingFlow> {
           onGetStarted: widget.onFinished,
           onAutoNext: _next,
         ),
-    (int total, int active) => OnboardingLockScreen(
+        (int total, int active) => OnboardingLockScreen(
           totalSteps: total,
           stepIndex: 4,
           isActive: active == 4,
@@ -109,7 +109,7 @@ class _OnboardingFlowState extends State<OnboardingFlow> {
           onAutoNext: _next,
           // last screen: NO auto
         ),
-    (int total, int active) => OnboardingLoginOrRegister(
+        (int total, int active) => OnboardingLoginOrRegister(
           totalSteps: total,
           stepIndex: 5,
           isActive: active == 5,
@@ -120,7 +120,7 @@ class _OnboardingFlowState extends State<OnboardingFlow> {
           onAutoNext: null,
           // last screen: NO auto
         ),
-  ];
+      ];
 
   @override
   void dispose() {

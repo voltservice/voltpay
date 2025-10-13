@@ -28,9 +28,9 @@ class ApiConfig {
 
 extension PaymentMethodTypeX on PaymentMethodType {
   String get asParam => switch (this) {
-        PaymentMethodType.wire => 'wire',
-        PaymentMethodType.debitCard => 'debitCard',
-        PaymentMethodType.creditCard => 'creditCard',
-        PaymentMethodType.accountTransfer => 'accountTransfer',
-      };
+    PaymentMethodType.wire => 'wire',
+    PaymentMethodType.debitCard => 'debitCard',
+    PaymentMethodType.creditCard => 'creditCard',
+    PaymentMethodType.accountTransfer => 'accountTransfer',
+  };
 }

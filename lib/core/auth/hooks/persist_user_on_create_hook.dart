@@ -14,7 +14,8 @@ class PersistUserOnCreateHook extends AuthHook {
       cred,
     ); // no Firestore here
     // Derive provider id for rules (e.g. google, facebook, apple, password)
-    final String provider = cred.credential?.providerId ??
+    final String provider =
+        cred.credential?.providerId ??
         cred.additionalUserInfo?.providerId ??
         (cred.user?.providerData.isNotEmpty == true
             ? cred.user!.providerData.first.providerId

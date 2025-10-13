@@ -18,14 +18,13 @@ class Spacing extends ThemeExtension<Spacing> {
     double? md,
     double? lg,
     double? xl,
-  }) =>
-      Spacing(
-        xs: xs ?? this.xs,
-        sm: sm ?? this.sm,
-        md: md ?? this.md,
-        lg: lg ?? this.lg,
-        xl: xl ?? this.xl,
-      );
+  }) => Spacing(
+    xs: xs ?? this.xs,
+    sm: sm ?? this.sm,
+    md: md ?? this.md,
+    lg: lg ?? this.lg,
+    xl: xl ?? this.xl,
+  );
 
   @override
   ThemeExtension<Spacing> lerp(ThemeExtension<Spacing>? other, double t) {

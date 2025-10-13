@@ -42,12 +42,15 @@ class _CountryPickerModalState extends ConsumerState<CountryPickerModal> {
             child: countryAsync.when(
               loading: () => const Center(child: CircularProgressIndicator()),
               error: (Object e, _) => Center(
-                child: Text('Failed to load countries\n$e',
-                    textAlign: TextAlign.center),
+                child: Text(
+                  'Failed to load countries\n$e',
+                  textAlign: TextAlign.center,
+                ),
               ),
               data: (CountryState state) {
-                final List<Country> filtered =
-                    query.isEmpty ? state.countries : notifier.search(query);
+                final List<Country> filtered = query.isEmpty
+                    ? state.countries
+                    : notifier.search(query);
 
                 if (filtered.isEmpty) {
                   return const Center(child: Text('No matches'));
@@ -64,11 +67,14 @@ class _CountryPickerModalState extends ConsumerState<CountryPickerModal> {
                           Navigator.pop(context, c);
                         }
                       },
-                      leading:
-                          Text(c.flag, style: const TextStyle(fontSize: 24)),
+                      leading: Text(
+                        c.flag,
+                        style: const TextStyle(fontSize: 24),
+                      ),
                       title: Text('${c.name} (${c.iso2})'),
-                      subtitle:
-                          Text('${c.currency.code} • ${c.currency.symbol}'),
+                      subtitle: Text(
+                        '${c.currency.code} • ${c.currency.symbol}',
+                      ),
                       trailing: Text(c.dialCode),
                     );
                   },

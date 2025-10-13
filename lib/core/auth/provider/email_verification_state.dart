@@ -29,8 +29,10 @@ class EmailVerificationNotifier extends _$EmailVerificationNotifier {
   Timer? _ticker;
 
   @override
-  EmailVerificationState build(
-      {required String email, int initialCountdown = 120}) {
+  EmailVerificationState build({
+    required String email,
+    int initialCountdown = 120,
+  }) {
     // initialize countdown
     final EmailVerificationState init = EmailVerificationState(
       email: email,

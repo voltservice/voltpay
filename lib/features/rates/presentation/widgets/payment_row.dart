@@ -13,15 +13,15 @@ class PaymentMethodRow extends StatelessWidget {
     required Key key,
     required this.method,
     required this.onTap,
-  })  : selected = true,
-        super(key: key);
+  }) : selected = true,
+       super(key: key);
 
   const PaymentMethodRow.unselected({
     required Key key,
     required this.method,
     required this.onTap,
-  })  : selected = false,
-        super(key: key);
+  }) : selected = false,
+       super(key: key);
 
   final PaymentMethodOption method;
   final bool selected;

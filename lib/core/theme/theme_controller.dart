@@ -9,10 +9,10 @@ enum AppThemeMode { system, light, dark }
 
 extension AppThemeModeX on AppThemeMode {
   ThemeMode get material => switch (this) {
-        AppThemeMode.system => ThemeMode.system,
-        AppThemeMode.light => ThemeMode.light,
-        AppThemeMode.dark => ThemeMode.dark,
-      };
+    AppThemeMode.system => ThemeMode.system,
+    AppThemeMode.light => ThemeMode.light,
+    AppThemeMode.dark => ThemeMode.dark,
+  };
 }
 
 // Simple repo (no codegen)
@@ -24,9 +24,7 @@ class ThemeModeRepository {
 
 // ✅ Plain Provider (avoids deprecated annotation usage)
 final Provider<ThemeModeRepository> themeRepoProvider =
-    Provider<ThemeModeRepository>(
-  (Ref ref) => ThemeModeRepository(),
-);
+    Provider<ThemeModeRepository>((Ref ref) => ThemeModeRepository());
 
 @riverpod
 class ThemeController extends _$ThemeController {

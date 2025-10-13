@@ -18,9 +18,9 @@ class EarnBanner extends StatelessWidget {
         child: Text(
           'Earn \$50',
           style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                color: scheme.onPrimary,
-                fontWeight: FontWeight.w800,
-              ),
+            color: scheme.onPrimary,
+            fontWeight: FontWeight.w800,
+          ),
         ),
       ),
     );

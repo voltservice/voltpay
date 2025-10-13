@@ -11,9 +11,9 @@ class EmailPasswordlessLoginRepo {
     required fb.FirebaseAuth auth,
     required ActionCodeFactory codeFactory,
     FlutterSecureStorage? secureStorage,
-  })  : _auth = auth,
-        _codeFactory = codeFactory,
-        _secure = secureStorage ?? const FlutterSecureStorage();
+  }) : _auth = auth,
+       _codeFactory = codeFactory,
+       _secure = secureStorage ?? const FlutterSecureStorage();
 
   final fb.FirebaseAuth _auth;
   final ActionCodeFactory _codeFactory;

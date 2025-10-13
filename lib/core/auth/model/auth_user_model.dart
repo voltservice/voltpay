@@ -36,8 +36,9 @@ abstract class AuthUserModel with _$AuthUserModel {
 
   /// Factory: Build from FirebaseAuth [User]
   factory AuthUserModel.fromFirebaseUser(fb.User user) {
-    final UserStatus inferred =
-        user.emailVerified ? UserStatus.verified : UserStatus.unverified;
+    final UserStatus inferred = user.emailVerified
+        ? UserStatus.verified
+        : UserStatus.unverified;
 
     return AuthUserModel(
       uid: user.uid,

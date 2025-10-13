@@ -18,10 +18,10 @@ enum PaymentMethodType {
 extension PaymentMethodTypeX on PaymentMethodType {
   String get apiCode => _$PaymentMethodTypeEnumMap[this]!;
   String get label => switch (this) {
-        PaymentMethodType.wire => 'Wire Transfer',
-        PaymentMethodType.debitCard => 'Debit Card',
-        PaymentMethodType.creditCard => 'Credit Card',
-        PaymentMethodType.accountTransfer => 'Account transfer',
-      };
+    PaymentMethodType.wire => 'Wire Transfer',
+    PaymentMethodType.debitCard => 'Debit Card',
+    PaymentMethodType.creditCard => 'Credit Card',
+    PaymentMethodType.accountTransfer => 'Account transfer',
+  };
   String get feeLinkLabel => '$label fee';
 }

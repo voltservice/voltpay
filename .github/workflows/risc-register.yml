@@ -1,0 +1,37 @@
+name: RISC Register Receiver
+
+on:
+  workflow_dispatch:
+
+permissions:
+  id-token: write    # <- required for OIDC
+  contents: read
+
+env:
+  PROJECT_ID: micro-harbor-469912-u6
+  PROJECT_NUMBER: 1018663726434
+  POOL_ID: voltpay-pool
+  PROVIDER_ID: github-actions
+  RECEIVER_URI: https://voltpay-api-1018663726434.europe-west2.run.app/risc/receiver
+  SA_EMAIL: voltpay-service-account@micro-harbor-469912-u6.iam.gserviceaccount.com
+
+jobs:
+  register:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: projects/${{ env.PROJECT_NUMBER }}/locations/global/workloadIdentityPools/voltpay-pool/providers/github-oidc
+          service_account: voltpay-service-account@${{ env.PROJECT_ID }}.iam.gserviceaccount.com
+
+      - name: Register receiver
+        run: |
+          ACCESS_TOKEN=$(gcloud auth print-access-token)
+          curl -sS -X POST "https://risc.googleapis.com/v1beta/registerReceiver" \
+            -H "Authorization: Bearer $ACCESS_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d "{\"receiverUri\":\"${RECEIVER_URI}\", \"includeSecurityEvents\":[\"*\"]}" \
+            -o /tmp/out.json -w "\nHTTP %{http_code}\n"
+          cat /tmp/out.json

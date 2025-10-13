@@ -69,6 +69,6 @@ class FirestoreUserProfileRepository implements IUserProfileRepository {
 
   @override
   Future<void> touchLastSignedIn(String uid) => _users.doc(uid).update(
-        <Object, Object?>{'lastSignedIn': FieldValue.serverTimestamp()},
-      );
+    <Object, Object?>{'lastSignedIn': FieldValue.serverTimestamp()},
+  );
 }

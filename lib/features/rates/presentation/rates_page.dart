@@ -101,10 +101,10 @@ class _RatesPageState extends ConsumerState<RatesPage> {
                         // open modal and update method
                         final PaymentMethodType? chosen =
                             await showPaymentMethodSheet(
-                          context,
-                          ref,
-                          selected: params.method,
-                        );
+                              context,
+                              ref,
+                              selected: params.method,
+                            );
                         if (chosen != null && mounted) {
                           ref
                               .read(quoteParamsProvider.notifier)

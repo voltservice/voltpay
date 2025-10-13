@@ -38,12 +38,15 @@ class EmailVerificationPendingScreen extends ConsumerWidget {
 
     final EmailVerificationState state = ref.watch(
       emailVerificationProvider(
-          email: email, initialCountdown: initialCountdown),
+        email: email,
+        initialCountdown: initialCountdown,
+      ),
     );
     final EmailVerificationNotifier notifier = ref.read(
       emailVerificationProvider(
-              email: email, initialCountdown: initialCountdown)
-          .notifier,
+        email: email,
+        initialCountdown: initialCountdown,
+      ).notifier,
     );
 
     return Scaffold(
@@ -78,9 +81,9 @@ class EmailVerificationPendingScreen extends ConsumerWidget {
                     'CHECK YOUR\nEMAIL',
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: -0.2,
-                        ),
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: -0.2,
+                    ),
                   ),
 
                   const SizedBox(height: 16),
@@ -91,9 +94,9 @@ class EmailVerificationPendingScreen extends ConsumerWidget {
                     'The email can take up to 1 minute to arrive.',
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: scheme.onSurface.withCustomOpacity(0.75),
-                          height: 1.4,
-                        ),
+                      color: scheme.onSurface.withCustomOpacity(0.75),
+                      height: 1.4,
+                    ),
                   ),
 
                   const Spacer(),

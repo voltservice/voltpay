@@ -27,8 +27,8 @@ final StreamProvider<bool> isLoggedInStreamProvider = StreamProvider<bool>(
 
 final Provider<IUserProfileRepository> userProfileRepoProvider =
     Provider<IUserProfileRepository>(
-  (Ref ref) => FirestoreUserProfileRepository(FirebaseFirestore.instance),
-);
+      (Ref ref) => FirestoreUserProfileRepository(FirebaseFirestore.instance),
+    );
 
 final Provider<List<AuthHook>> authHooksProvider = Provider<List<AuthHook>>((
   Ref ref,
@@ -50,30 +50,30 @@ final Provider<AuthService> authServiceProvider = Provider<AuthService>((
 
 final Provider<fb.FirebaseAuth> firebaseAuthProvider =
     Provider<fb.FirebaseAuth>((Ref ref) {
-  return fb.FirebaseAuth.instance;
-});
+      return fb.FirebaseAuth.instance;
+    });
 
 final Provider<FlutterSecureStorage> secureStorageProvider =
     Provider<FlutterSecureStorage>((Ref ref) {
-  return const FlutterSecureStorage();
-});
+      return const FlutterSecureStorage();
+    });
 
 final Provider<ActionCodeFactory> actionCodeFactoryProvider =
     Provider<ActionCodeFactory>((Ref ref) {
-  return buildEmailLinkActionCodeSettings;
-});
+      return buildEmailLinkActionCodeSettings;
+    });
 
 final Provider<EmailPasswordlessLoginRepo> emailPasswordlessLoginRepoProvider =
     Provider<EmailPasswordlessLoginRepo>((Ref ref) {
-  return EmailPasswordlessLoginRepo(
-    auth: ref.read(firebaseAuthProvider),
-    codeFactory: ref.read(actionCodeFactoryProvider),
-    secureStorage: ref.read(secureStorageProvider),
-  );
-});
+      return EmailPasswordlessLoginRepo(
+        auth: ref.read(firebaseAuthProvider),
+        codeFactory: ref.read(actionCodeFactoryProvider),
+        secureStorage: ref.read(secureStorageProvider),
+      );
+    });
 
 /// Optional: a stream for your app-wide auth user
 final StreamProvider<fb.User?> firebaseUserChangesProvider =
     StreamProvider<fb.User?>((Ref ref) {
-  return ref.read(firebaseAuthProvider).authStateChanges();
-});
+      return ref.read(firebaseAuthProvider).authStateChanges();
+    });

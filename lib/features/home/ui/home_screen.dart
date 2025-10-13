@@ -278,10 +278,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                               onTap: () async {
                                 final PaymentMethodType? chosen =
                                     await showPaymentMethodSheet(
-                                  context,
-                                  ref,
-                                  selected: params.method,
-                                );
+                                      context,
+                                      ref,
+                                      selected: params.method,
+                                    );
                                 if (chosen != null && mounted) {
                                   ref
                                       .read(quoteParamsProvider.notifier)

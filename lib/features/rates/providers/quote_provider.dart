@@ -43,11 +43,11 @@ class QuoteParams {
 class QuoteParamsNotifier extends _$QuoteParamsNotifier {
   @override
   QuoteParams build() => const QuoteParams(
-        source: 'USD',
-        target: 'NGN',
-        amount: 100,
-        method: PaymentMethodType.wire,
-      );
+    source: 'USD',
+    target: 'NGN',
+    amount: 100,
+    method: PaymentMethodType.wire,
+  );
 
   void update(QuoteParams newParams) => state = newParams;
 

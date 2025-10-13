@@ -5,8 +5,8 @@ import 'package:voltpay/core/auth/model/auth_user_model.dart';
 import 'package:voltpay/core/auth/provider/auth_provider.dart';
 import 'package:voltpay/core/auth/provider/auth_user_provider.dart';
 
-final StreamProvider<AuthUserModel?> appUserProvider =
-    StreamProvider<AuthUserModel?>((Ref ref) async* {
+final StreamProvider<AuthUserModel?>
+appUserProvider = StreamProvider<AuthUserModel?>((Ref ref) async* {
   final AuthUserModel? auth = await ref.watch(authUserProvider.future);
   if (auth == null) {
     yield null;

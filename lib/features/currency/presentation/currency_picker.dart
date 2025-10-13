@@ -101,9 +101,7 @@ class _CurrencyPickerBodyState extends ConsumerState<_CurrencyPickerBody> {
                           padding: const EdgeInsets.fromLTRB(4, 12, 4, 8),
                           child: Text(
                             'Popular currencies',
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleMedium
+                            style: Theme.of(context).textTheme.titleMedium
                                 ?.copyWith(color: scheme.onSurfaceVariant),
                           ),
                         ),
@@ -118,9 +116,7 @@ class _CurrencyPickerBodyState extends ConsumerState<_CurrencyPickerBody> {
                           padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
                           child: Text(
                             'All currencies',
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleMedium
+                            style: Theme.of(context).textTheme.titleMedium
                                 ?.copyWith(color: scheme.onSurfaceVariant),
                           ),
                         ),

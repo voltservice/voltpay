@@ -52,11 +52,11 @@ class ServiceScreen extends ConsumerWidget {
                     alignment: Alignment.centerLeft,
                     child: Text(
                       'What kind of account would you like to open today?',
-                      style:
-                          Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                fontWeight: FontWeight.w900,
-                                letterSpacing: -0.2,
-                              ),
+                      style: Theme.of(context).textTheme.headlineSmall
+                          ?.copyWith(
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: -0.2,
+                          ),
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -65,8 +65,8 @@ class ServiceScreen extends ConsumerWidget {
                     child: Text(
                       'You can add another account later on, too',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: scheme.onSurface.withCustomOpacity(.75),
-                          ),
+                        color: scheme.onSurface.withCustomOpacity(.75),
+                      ),
                     ),
                   ),
 
@@ -76,11 +76,11 @@ class ServiceScreen extends ConsumerWidget {
                       alignment: Alignment.centerLeft,
                       child: Text(
                         userLabel!,
-                        style:
-                            Theme.of(context).textTheme.labelMedium?.copyWith(
-                                  color: scheme.primary,
-                                  fontWeight: FontWeight.w600,
-                                ),
+                        style: Theme.of(context).textTheme.labelMedium
+                            ?.copyWith(
+                              color: scheme.primary,
+                              fontWeight: FontWeight.w600,
+                            ),
                       ),
                     ),
                   ],
@@ -120,8 +120,8 @@ class ServiceScreen extends ConsumerWidget {
                       'You cannot use a personal account for business.',
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: scheme.onSurface.withCustomOpacity(.6),
-                          ),
+                        color: scheme.onSurface.withCustomOpacity(.6),
+                      ),
                     ),
                   ),
                 ],
