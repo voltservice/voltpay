@@ -6,7 +6,7 @@ fb.ActionCodeSettings buildEmailLinkActionCodeSettings() {
   // This URL must be on your project's Authorized Domains
   // and (if using Firebase Dynamic Links) use your `page.link` domain.
   return fb.ActionCodeSettings(
-    url: 'https://micro-harbor-469912-u6.web.app/verify/verification.html',
+    url: 'https://voltpay.metalbrain.net/finishSignIn',
     handleCodeInApp: true,
     androidPackageName: 'net.metalbrain.voltpay',
     androidInstallApp: true,

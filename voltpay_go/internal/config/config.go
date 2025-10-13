@@ -7,10 +7,10 @@ import (
 )
 
 type Config struct {
-	Port                 string
-	ExchangeRateAPIKey   string
-	AllowedOriginsCSV    string
-	HTTPClientTimeout    time.Duration
+	Port               string
+	ExchangeRateAPIKey string
+	AllowedOriginsCSV  string
+	HTTPClientTimeout  time.Duration
 }
 
 func Load() Config {
@@ -24,8 +24,7 @@ func Load() Config {
 	}
 	allowed := os.Getenv("ALLOWED_ORIGINS")
 	if allowed == "" {
-		allowed = "https://metalbrain.net,https://www.metalbrain.net,http://localhost:5001,http://localhost:3000",
-		log.Println("[warn] ALLOWED_ORIGINS is empty (ok for local dev)")
+		allowed = "https://metalbrain.net,https://www.metalbrain.net,http://localhost:5001,http://localhost:3000"
 	}
 	return Config{
 		Port:               port,

@@ -53,8 +53,11 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data android:scheme="https" />
-                <data android:host="https://micro-harbor-469912-u6.web.app/verify/verification.html" />
+                <data
+                    android:scheme="https"
+                    android:host="voltpay.metalbrain.net"
+                    android:pathPrefix="/finishSignIn" />
+
             </intent-filter>
         </activity>
         <!-- Don't delete the meta-data below.

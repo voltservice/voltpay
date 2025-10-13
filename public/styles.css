@@ -232,6 +232,20 @@ footer.page-foot {
 .toc ul {
     margin: 0;
 }
+/* 2) Ensure readable text inside cards/notice, in both light/dark */
+.card,
+.card-bg,
+.notice {
+  background: var(--card);
+  color: var(--text);              /* force text color on light card bg */
+}
+
+/* 3) Notice background that adapts to theme without washing text */
+.notice {
+  border-left: 4px solid var(--ink);
+  /* Mix with the page bg, not hardcoded #fff */
+  background: color-mix(in oklab, var(--bg) 92%, var(--ink-soft));
+}
 
 /* ---- Accessibility helpers ---------------------------------------------- */
 sr-only,
@@ -263,4 +277,199 @@ sr-only,
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
     }
+}
+
+/* ---- Brand tokens ------------------------------------------------------- */
+:root {
+  color-scheme: light dark;
+
+  /* Base */
+  --bg: #ffffff;
+  --text: #0a0a0a;
+  --muted-text: #5f6b77;
+  --border: rgba(0, 0, 0, .12);
+  --ink-soft: rgba(0, 0, 0, .04);
+  --card: #ffffff;
+
+  /* VoltPay brand */
+  --brand: #26A96C;          /* VoltPay Green */
+  --brand-ink: #1f8b59;      /* Hover/darkened */
+  --brand-contrast: #0a0a0a; /* Text on brand surfaces (we keep dark for accessibility) */
+  --accent: #0b63f6;         /* keep as secondary/accent for links */
+
+  /* Links */
+  --link: var(--accent);
+  --link-visited: #6a38c2;
+
+  /* Pills / notices */
+  --pill-bg: rgba(0, 0, 0, .06);
+  --notice-info-bg: #eef5ff;
+  --notice-info-border: #cfe1ff;
+  --notice-warn-bg: #fff6e6;
+  --notice-warn-border: #ffe0a6;
+  --notice-ok-bg: #ecfbf0;
+  --notice-ok-border: #c9f1d5;
+
+  /* Layout helpers */
+  --radius: 14px;
+  --radius-sm: 10px;
+  --shadow: 0 4px 18px rgba(0,0,0,.08);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0c0c0c;
+    --text: #f6f7f8;
+    --muted-text: #b9c0c7;
+    --border: rgba(255,255,255,.16);
+    --ink-soft: rgba(255,255,255,.06);
+    --card: #121212;
+
+    --brand: #26A96C;        /* keep brand consistent in dark */
+    --brand-ink: #5cd297;    /* slight lift on hover in dark */
+    --brand-contrast: #0b0b0b;
+
+    --pill-bg: rgba(255,255,255,.08);
+    --notice-info-bg: #0d1b2a;
+    --notice-info-border: #1e3a5f;
+    --notice-warn-bg: #2a1e0a;
+    --notice-warn-border: #5a3c12;
+    --notice-ok-bg: #0f2415;
+    --notice-ok-border: #1d4d2a;
+  }
+}
+
+/* ---- Header / brand lockup --------------------------------------------- */
+.brand-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem;
+  padding: .875rem 0;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 1.25rem;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: .6rem;
+  text-decoration: none;
+  color: var(--text);
+}
+
+.brand:hover { text-decoration: none; }
+
+.brand .logo {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: inline-block;
+}
+
+.brand .wordmark {
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: .2px;
+}
+
+/* Optional: slim top nav for future links */
+.topnav {
+  display: flex;
+  gap: 1rem;
+}
+.topnav a {
+  font-size: .95rem;
+  color: var(--muted-text);
+  text-decoration: none;
+}
+.topnav a:hover { color: var(--text); }
+
+/* ---- Hero / page header ------------------------------------------------- */
+.page-head {
+  margin: 1.25rem 0 1rem;
+}
+.header-sub {
+  color: var(--muted-text);
+  margin: .35rem 0 0;
+  font-size: .95rem;
+}
+
+/* ---- Buttons ------------------------------------------------------------ */
+.btn {
+  appearance: none;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+  padding: .7rem 1rem;
+  border-radius: 999px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform .04s ease, background .2s ease, border-color .2s ease;
+}
+.btn:active { transform: translateY(1px); }
+
+.btn-primary {
+  background: var(--brand);
+  color: var(--brand-contrast);
+  border-color: transparent;
+}
+.btn-primary:hover { background: var(--brand-ink); }
+
+.btn-ghost {
+  background: transparent;
+}
+.btn-ghost:hover { background: var(--ink-soft); }
+
+/* ---- Cards / sections --------------------------------------------------- */
+.section {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.1rem 1.15rem;
+  background: var(--card);
+  margin: 1rem 0;
+  box-shadow: var(--shadow);
+}
+.section h2:first-child { margin-top: 0; }
+
+/* ---- Simple grid -------------------------------------------------------- */
+.grid {
+  display: grid;
+  gap: 1rem;
+}
+.grid-2 { grid-template-columns: repeat(2, minmax(0,1fr)); }
+@media (max-width: 720px) { .grid-2 { grid-template-columns: 1fr; } }
+
+/* ---- Footer ------------------------------------------------------------- */
+.page-foot {
+  margin: 2rem 0 3rem;
+  padding-top: 1rem;
+  border-top: 1px dashed var(--border);
+  color: var(--muted-text);
+  font-size: .95rem;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+/* keep the rest of your reset/typography as-is */
+/* ---- Typography --------------------------------------------------------- */
+h1, h2, h3 {
+  line-height: 1.25;
+  margin: 1.25rem 0 .5rem;
+}
+h1 { font-size: clamp(1.6rem, 2vw + 1rem, 2.2rem); }
+h2 { font-size: clamp(1.25rem, 1.2vw + .9rem, 1.5rem); }
+h3 { font-size: 1.1rem; }
+p, ul, ol {
+  margin: .8rem 0;
+}
+
+ul, ol { padding-left: 1.25rem; }
+small, .muted { color: var(--muted-text); }
+/* ---- Links -------------------------------------------------------------- */
+a {
+  color: var(--link);
+  text-decoration: none;
 }

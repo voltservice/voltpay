@@ -1,0 +1,31 @@
+name: Inspect OIDC Token Claims
+
+on:
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  inspect-token:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate OIDC token and decode
+        id: oidc
+        run: |
+          echo "=== Requesting GitHub OIDC token ==="
+          TOKEN=$(curl -s -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+                      "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=voltpay-debug")
+          echo "::add-mask::$TOKEN" # mask token in logs
+
+          echo "=== Raw JWT token ==="
+          echo "$TOKEN" | jq -r .value > token.jwt
+
+          echo "=== Decoding header and payload ==="
+          HEADER=$(cut -d "." -f1 token.jwt | base64 -d 2>/dev/null)
+          PAYLOAD=$(cut -d "." -f2 token.jwt | base64 -d 2>/dev/null)
+          echo "---- HEADER ----"
+          echo "$HEADER" | jq .
+          echo "---- PAYLOAD ----"
+          echo "$PAYLOAD" | jq .

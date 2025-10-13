@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:voltpay/core/auth/provider/auth_provider.dart';
-import 'package:voltpay/core/auth/provider/facebook_sign_in_provider.dart';
 import 'package:voltpay/core/auth/provider/google_sign_in_provider.dart'
     hide SignInAborted;
 import 'package:voltpay/core/auth/service/auth_service.dart';
@@ -151,7 +150,7 @@ class OnboardingLoginOrRegisterState
     final Widget topBar = (_idle != null)
         ? AnimatedBuilder(
             animation: _idle!,
-            builder: (_, __) => OnboardingStepBar(
+            builder: (_, _) => OnboardingStepBar(
               total: widget.totalSteps,
               current: widget.stepIndex,
               progress: _idle!.value,
@@ -189,7 +188,7 @@ class OnboardingLoginOrRegisterState
                               _enter,
                               _float,
                             ]),
-                            builder: (_, __) {
+                            builder: (_, _) {
                               final double dy = _rise.value + _bob.value;
                               return Opacity(
                                 opacity: _fadeIn.value,
@@ -249,8 +248,7 @@ class OnboardingLoginOrRegisterState
                                       ),
                                       onPressed: () {
                                         _resetIdle();
-                                        (widget.onLogin ?? widget.onGetStarted)
-                                            .call();
+                                        context.goNamed(AppRoute.login.name);
                                       },
                                     ),
                                   ],
@@ -312,40 +310,8 @@ class OnboardingLoginOrRegisterState
                               // Providers will emit new AuthUserModel automatically.
                             },
                             size: ButtonSize.large,
-                            loadingColor: scheme.primary,
-                          ),
-                          const SizedBox(height: 24),
-                          LoginButton(
-                            provider: LoginProviders.facebook,
-                            onPressed: () async {
-                              try {
-                                final AuthService auth = ref.read(
-                                  authServiceProvider,
-                                );
-                                final UserCredential cred = await auth.signIn(
-                                  FacebookSignInProvider(),
-                                );
-                                // if we got here, sign-in succeeded; hooks will upsert the user doc
-                                if (!mounted || cred.user == null) {
-                                  return;
-                                }
-                                // navigate (or rely on a listener of authUserProvider)
-                                context.goNamed(AppRoute.service.name);
-                              } on SignInAborted {
-                                // user cancelled — ignore or subtle toast
-                              } catch (e, st) {
-                                debugPrint('FB sign-in error: $e\n$st');
-                                if (!mounted) {
-                                  return;
-                                }
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text('Facebook sign-in failed'),
-                                  ),
-                                );
-                              }
-                            },
-                            size: ButtonSize.large,
+                            enabled: true,
+                            isLoading: false,
                             loadingColor: scheme.primary,
                           ),
                           const SizedBox(height: 24),

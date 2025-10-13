@@ -17,6 +17,8 @@ extension AppRouteExtension on AppRoute {
         return '/flow';
       case AppRoute.onboarding:
         return '/onboarding';
+      case AppRoute.obnlastpg:
+        return '/obnlastpg';
       case AppRoute.remit:
         return '/remit';
       case AppRoute.send:
@@ -27,6 +29,8 @@ extension AppRouteExtension on AppRoute {
         return '/rate';
       case AppRoute.emailEntry:
         return '/email-entry';
+      case AppRoute.login:
+        return '/login';
       case AppRoute.emailVerification:
         return '/email-verification';
       case AppRoute.service:

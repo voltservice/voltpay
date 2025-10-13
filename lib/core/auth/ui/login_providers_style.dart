@@ -1,16 +1,50 @@
 import 'package:flutter/material.dart';
 
-enum LoginProviders { google, facebook, emailPassword }
+enum _Kind { google, facebook, emailPassword, apple, passkey }
+
+_Kind _kindFromLabel(String label) {
+  if (label.contains('Google')) {
+    return _Kind.google;
+  }
+  if (label.contains('Facebook')) {
+    return _Kind.facebook;
+  }
+  if (label.contains('Email')) {
+    return _Kind.emailPassword;
+  }
+  if (label.contains('Apple')) {
+    return _Kind.apple;
+  }
+  if (label.contains('Passkey')) {
+    return _Kind.passkey;
+  }
+  return _Kind.emailPassword;
+}
+
+class ButtonColors {
+  final Color background;
+  final Color foreground;
+  final Color? border; // for outlined brand like Google
+  const ButtonColors({
+    required this.background,
+    required this.foreground,
+    this.border,
+  });
+}
+
+enum LoginProviders { google, facebook, apple, passkey, emailPassword }
 
 /// The policy describes *how* to color a button given the current Theme.
 /// No hard-coded Colors in the model except brand requirements.
 class LoginProviderPolicy {
   final String label;
   final String iconAsset;
-  final bool tintIcon; // true = tint icon with fg; false = keep original colors
+  final bool tintIcon;
   final String loadingLabel;
-  final bool
-      useBrandColors; // true for Google/Facebook, false for theme-colored buttons
+  final bool useBrandColors;
+  final Color backgroundColor;
+  final Color foregroundColor;
+  final Color? borderColor;
 
   const LoginProviderPolicy({
     required this.label,
@@ -18,31 +52,48 @@ class LoginProviderPolicy {
     this.tintIcon = true,
     this.loadingLabel = 'Signing in…',
     this.useBrandColors = false,
+    this.backgroundColor = Colors.transparent,
+    this.foregroundColor = Colors.transparent,
+    this.borderColor,
   });
 
   /// Resolve runtime colors based on current ColorScheme and provider brand rules.
-  ButtonColors resolve(ColorScheme scheme, Brightness brightness) {
+  ButtonColors resolve(
+    ColorScheme scheme,
+    Brightness brightness,
+    LoginProviderPolicy provider,
+  ) {
     switch (_kindFromLabel(label)) {
       case _Kind.google:
-        // Google brand: white bg, dark text, brand-colored icon (no tint), subtle border.
         return ButtonColors(
-          background: Colors.white,
-          foreground: Colors.black87,
-          border: scheme.outlineVariant,
-        );
-      case _Kind.facebook:
-        // Facebook brand blue regardless of theme.
-        const Color fbBlue = Color(0xFF1877F2);
-        return const ButtonColors(
-          background: fbBlue,
-          foreground: Colors.white,
+          background: provider.backgroundColor,
+          foreground: provider.foregroundColor,
           border: null,
         );
-      case _Kind.email:
+      case _Kind.facebook:
+        return ButtonColors(
+          background: provider.backgroundColor,
+          foreground: provider.foregroundColor,
+          border: null,
+        );
+      case _Kind.apple:
+        return ButtonColors(
+          background: provider.backgroundColor,
+          foreground: provider.foregroundColor,
+          border: null,
+        );
+      case _Kind.emailPassword:
         // Theme-colored (adaptive): use primary/onPrimary.
         return ButtonColors(
-          background: scheme.primary,
-          foreground: scheme.onPrimary,
+          background: provider.backgroundColor,
+          foreground: provider.foregroundColor,
+          border: null,
+        );
+      case _Kind.passkey:
+        final bool _ = brightness == Brightness.dark;
+        return ButtonColors(
+          background: provider.backgroundColor,
+          foreground: provider.foregroundColor,
           border: null,
         );
     }
@@ -57,6 +108,10 @@ class LoginProviderPolicy {
           iconAsset: 'assets/images/google.png',
           tintIcon: false,
           useBrandColors: true,
+          loadingLabel: 'Signing in…',
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.black,
+          borderColor: Colors.black,
         );
       case LoginProviders.facebook:
         return const LoginProviderPolicy(
@@ -64,6 +119,9 @@ class LoginProviderPolicy {
           iconAsset: 'assets/images/facebook.png',
           tintIcon: false,
           useBrandColors: true,
+          loadingLabel: 'Signing in…',
+          backgroundColor: Colors.blue,
+          foregroundColor: Colors.black,
         );
       case LoginProviders.emailPassword:
         return const LoginProviderPolicy(
@@ -71,30 +129,31 @@ class LoginProviderPolicy {
           iconAsset: 'assets/images/email.png',
           tintIcon: true,
           useBrandColors: false,
+          loadingLabel: 'Signing in…',
+          backgroundColor: Colors.transparent,
+          foregroundColor: Colors.transparent,
+        );
+      case LoginProviders.apple:
+        return const LoginProviderPolicy(
+          label: 'Continue with apple',
+          iconAsset: 'assets/images/apple.png',
+          tintIcon: true,
+          useBrandColors: false,
+          loadingLabel: 'Signing in…',
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.black,
+          borderColor: Colors.black,
+        );
+      case LoginProviders.passkey:
+        return const LoginProviderPolicy(
+          label: 'Continue with passkey',
+          iconAsset: 'assets/images/passkey.png',
+          tintIcon: true,
+          useBrandColors: false,
+          loadingLabel: 'Signing in…',
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.black,
         );
     }
   }
-}
-
-class ButtonColors {
-  final Color background;
-  final Color foreground;
-  final Color? border; // for outlined brand like Google
-  const ButtonColors({
-    required this.background,
-    required this.foreground,
-    this.border,
-  });
-}
-
-enum _Kind { google, facebook, email }
-
-_Kind _kindFromLabel(String label) {
-  if (label.contains('Google')) {
-    return _Kind.google;
-  }
-  if (label.contains('Facebook')) {
-    return _Kind.facebook;
-  }
-  return _Kind.email;
 }

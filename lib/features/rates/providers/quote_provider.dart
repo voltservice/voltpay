@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:voltpay/features/rates/domain/pay_method_type.dart';
 import 'package:voltpay/features/rates/domain/quote.dart';
-import 'package:voltpay/features/rates/infrastructure/volt_api_client.dart';
-import 'package:voltpay/features/rates/providers/api_client_provider.dart';
+import 'package:voltpay/features/rates/infrastructure/quote_repository.dart';
+import 'package:voltpay/features/rates/providers/api_config_provider.dart';
 
 part 'quote_provider.g.dart';
 
@@ -74,7 +74,8 @@ class QuoteNotifier extends _$QuoteNotifier {
   FutureOr<Quote> build() async {
     // Watch params reactively
     final QuoteParams params = ref.watch(quoteParamsProvider);
-    final VoltApiClient api = ref.watch(voltApiClientProvider);
+    // final VoltApiClient api = ref.read(voltApiClientProvider);
+    final QuoteRepository api = ref.read(quoteRepoProvider);
 
     // debounce rapid edits
     await Future<void>.delayed(const Duration(milliseconds: 200));
@@ -83,7 +84,7 @@ class QuoteNotifier extends _$QuoteNotifier {
       source: params.source,
       target: params.target,
       amount: params.amount,
-      method: _methodToString(params.method),
+      method: params.method,
     );
   }
 
@@ -92,12 +93,13 @@ class QuoteNotifier extends _$QuoteNotifier {
     state = const AsyncLoading<Quote>();
     try {
       final QuoteParams params = ref.read(quoteParamsProvider);
-      final VoltApiClient api = ref.read(voltApiClientProvider);
+      // final VoltApiClient api = ref.read(voltApiClientProvider);
+      final QuoteRepository api = ref.read(quoteRepoProvider);
       final Quote quote = await api.getQuote(
         source: params.source,
         target: params.target,
         amount: params.amount,
-        method: _methodToString(params.method),
+        method: params.method,
       );
       state = AsyncData<Quote>(quote);
     } catch (e, st) {
@@ -106,9 +108,9 @@ class QuoteNotifier extends _$QuoteNotifier {
   }
 }
 
-String _methodToString(PaymentMethodType t) => switch (t) {
-      PaymentMethodType.wire => 'wire',
-      PaymentMethodType.debitCard => 'debitCard',
-      PaymentMethodType.creditCard => 'creditCard',
-      PaymentMethodType.accountTransfer => 'accountTransfer',
-    };
+// String _methodToString(PaymentMethodType t) => switch (t) {
+//       PaymentMethodType.wire => 'wire',
+//       PaymentMethodType.debitCard => 'debitCard',
+//       PaymentMethodType.creditCard => 'creditCard',
+//       PaymentMethodType.accountTransfer => 'accountTransfer',
+//     };

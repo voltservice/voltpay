@@ -20,5 +20,9 @@ ISignInProvider providerFor(
         email: email ?? '',
         password: password ?? '',
       );
+    case LoginProviders.apple:
+      throw UnimplementedError('Apple sign-in not implemented.');
+    case LoginProviders.passkey:
+      throw UnimplementedError('Passkey sign-in not implemented.');
   }
 }

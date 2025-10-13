@@ -67,7 +67,7 @@ class VoltDrawer extends ConsumerWidget {
             // Header (avatar + name + email)
             userAsync.when(
               loading: () => HeaderSkeleton(scheme: scheme),
-              error: (_, __) => HeaderError(onProfile: onProfile),
+              error: (_, _) => HeaderError(onProfile: onProfile),
               data: (DrawerUserUi ui) => Header(
                 name: ui.displayName,
                 email: ui.email,
@@ -104,12 +104,14 @@ class VoltDrawer extends ConsumerWidget {
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.symmetric(horizontal: 12),
               child: Row(
-                children: providers.map((LinkedProviderChip p) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4),
-                    child: VoltChip(icon: p.icon, label: p.label),
-                  );
-                }).toList(growable: false),
+                children: providers
+                    .map((LinkedProviderChip p) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                        child: VoltChip(icon: p.icon, label: p.label),
+                      );
+                    })
+                    .toList(growable: false),
               ),
             ),
 

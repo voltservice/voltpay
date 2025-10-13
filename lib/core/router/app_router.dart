@@ -9,6 +9,7 @@ import 'package:voltpay/core/auth/provider/auth_provider.dart';
 import 'package:voltpay/core/auth/repository/email_passwordless_login_repo.dart';
 import 'package:voltpay/core/auth/ui/email_entry_screen.dart';
 import 'package:voltpay/core/auth/ui/email_verification_pending_screen.dart';
+import 'package:voltpay/core/auth/ui/login_screen.dart';
 import 'package:voltpay/core/go/go_services.dart';
 import 'package:voltpay/core/router/app_routes.dart';
 import 'package:voltpay/core/router/router_ext.dart';
@@ -20,6 +21,7 @@ import 'package:voltpay/features/home/ui/payments_screen.dart';
 import 'package:voltpay/features/home/ui/recipients_screen.dart';
 import 'package:voltpay/features/onboarding/ui/service_screen.dart';
 import 'package:voltpay/features/rates/presentation/rates_page.dart';
+import 'package:voltpay/presentation/views/onboarding_login_or_register.dart';
 import 'package:voltpay/presentation/widgets/onboarding_flow.dart';
 import 'package:voltpay/splash/splash_screen.dart';
 
@@ -103,9 +105,24 @@ final GoRouter appRouter = GoRouter(
           ),
         ),
         GoRoute(
+          path: AppRoute.obnlastpg.path,
+          name: AppRoute.obnlastpg.name,
+          builder: (BuildContext ctx, GoRouterState state) =>
+              OnboardingLoginOrRegister(
+                totalSteps: 0,
+                stepIndex: 0,
+                isActive: false,
+                autoAdvance: false,
+                idleDuration: const Duration(seconds: 0),
+                onCheckRates: () => ctx.goNamed(AppRoute.rate.name),
+                onGetStarted: () => ctx.goNamed(AppRoute.emailEntry.name),
+                onAutoNext: null,
+              ),
+        ),
+        GoRoute(
           path: AppRoute.rate.path,
           name: AppRoute.rate.name,
-          builder: (_, __) => const RatesPage(),
+          builder: (_, _) => const RatesPage(),
         ),
         // Somewhere in your router or caller:
         GoRoute(
@@ -140,14 +157,14 @@ final GoRouter appRouter = GoRouter(
             return Consumer(
               builder: (BuildContext context, WidgetRef ref, _) =>
                   EmailVerificationPendingScreen(
-                email: email,
-                onClose: () => context.pop(),
-                onResend: (String e) async {
-                  await ref
-                      .read(emailPasswordlessLoginRepoProvider)
-                      .sendEmailLink(e);
-                },
-              ),
+                    email: email,
+                    onClose: () => context.pop(),
+                    onResend: (String e) async {
+                      await ref
+                          .read(emailPasswordlessLoginRepoProvider)
+                          .sendEmailLink(e);
+                    },
+                  ),
             );
           },
         ),
@@ -197,6 +214,13 @@ final GoRouter appRouter = GoRouter(
                   const NoTransitionPage<dynamic>(child: PaymentsScreen()),
             ),
           ],
+        ),
+        // add more routes here; they all inherit the AppBar + ThemeSwitcher
+        GoRoute(
+          path: AppRoute.login.path,
+          name: AppRoute.login.name,
+          builder: (BuildContext context, GoRouterState state) =>
+              const LoginScreen(),
         ),
         GoRoute(
           path: AppRoute.go.path,

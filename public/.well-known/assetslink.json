@@ -1,11 +1,17 @@
 [
   {
-    "relation": ["delegate_permission/common.handle_all_urls"],
+    "relation": [
+      "delegate_permission/common.handle_all_urls",
+      "delegate_permission/common.get_login_creds"
+    ],
     "target": {
       "namespace": "android_app",
       "package_name": "net.metalbrain.voltpay",
-      "sha256_cert_fingerprints":
-        ["49:63:23:EB:EA:16:BC:38:33:36:02:8C:BF:17:93:C9:73:B2:3E:72:7F:06:B4:AB:5A:2C:00:D7:D3:B5:2C:5E"]
+      "sha256_cert_fingerprints": [
+        "EA:65:DB:88:64:3D:68:46:F0:76:B5:5B:24:96:60:5D:3A:56:38:26:D5:6F:27:51:A7:5A:2B:3C:DA:3B:F1:AF",
+        "0A:DB:AC:B1:16:02:6E:C4:D9:92:EF:C0:4C:87:68:C1:2A:C7:94:BE:CD:AA:72:D8:B4:2F:CC:1C:84:C3:50:40",
+        "49:63:23:EB:EA:16:BC:38:33:36:02:8C:BF:17:93:C9:73:B2:3E:72:7F:06:B4:AB:5A:2C:00:D7:D3:B5:2C:5E"
+      ]
     }
   }
 ]

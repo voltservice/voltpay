@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:voltpay/core/auth/provider/email_verification_state.dart';
+import 'package:voltpay/core/router/app_routes.dart';
 import 'package:voltpay/core/utils/buttons/app_buttons.dart';
 import 'package:with_opacity/with_opacity.dart';
 
@@ -60,7 +62,7 @@ class EmailVerificationPendingScreen extends ConsumerWidget {
                       tooltip: 'Close',
                       icon: const Icon(Icons.close_rounded),
                       color: scheme.onSurface,
-                      onPressed: onClose,
+                      onPressed: () => context.goNamed(AppRoute.obnlastpg.name),
                     ),
                   ),
 

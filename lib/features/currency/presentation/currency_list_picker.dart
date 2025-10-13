@@ -12,7 +12,7 @@ class CurrencyListSection extends StatelessWidget {
     final TextTheme textTheme = Theme.of(context).textTheme;
     return SliverList.separated(
       itemCount: items.length,
-      separatorBuilder: (_, __) => const Divider(height: 1),
+      separatorBuilder: (_, _) => const Divider(height: 1),
       itemBuilder: (_, int i) {
         final Currency c = items[i];
         return ListTile(

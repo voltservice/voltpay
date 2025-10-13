@@ -64,7 +64,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
         child: Center(
           child: AnimatedBuilder(
             animation: _c,
-            builder: (_, __) {
+            builder: (_, _) {
               return Opacity(
                 opacity: _opacity.value,
                 child: Transform.scale(

@@ -12,6 +12,8 @@ enum AppRoute {
   boost,
   rate,
   emailEntry,
+  login,
   emailVerification,
   service,
+  obnlastpg,
 }

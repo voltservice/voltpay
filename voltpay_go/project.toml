@@ -1,0 +1,7 @@
+[[build.env]]
+name = "GOOGLE_BUILDABLE"
+value = "./cmd/funcframework"
+
+[[build.env]]
+name = "GOOGLE_GOMOD"
+value = "./go.mod"

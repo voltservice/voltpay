@@ -2,83 +2,72 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Verify your email • VoltPay</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="color-scheme" content="light dark" />
-  <style>
-    :root{ --vp-green:#26A96C; --vp-green-ink:#0E5938; --card-bg:#fff; --ink:#0f172a; --muted:#64748b; --ring:#e5e7eb; --shadow:0 10px 30px rgba(0,0,0,.08) }
-    @media (prefers-color-scheme: dark){
-      :root{ --card-bg:#0b0f14; --ink:#e5e7eb; --muted:#94a3b8; --ring:#1f2937; --shadow:0 10px 30px rgba(0,0,0,.35) }
-    }
-    html,body{height:100%}
-    body{
-      margin:0; display:flex; align-items:center; justify-content:center;
-      background:
-        radial-gradient(1200px 1200px at 10% -10%, rgba(38,169,108,.10), transparent 60%),
-        radial-gradient(1000px 1000px at 110% 10%, rgba(38,169,108,.12), transparent 60%),
-        linear-gradient(180deg, #f8fafc, #f1f5f9 40%, #eef2f7);
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Inter, Helvetica, Arial;
-      color: var(--ink);
-    }
-    .card{ width:min(440px,92vw); background:var(--card-bg); border:1px solid var(--ring); border-radius:20px; box-shadow:var(--shadow); padding:28px 22px; text-align:center }
-    .logo{ width:56px; height:56px; border-radius:14px; display:inline-grid; place-items:center; background:linear-gradient(135deg, var(--vp-green), #45d39a); color:#fff; font-weight:800; font-size:28px; margin:6px auto 14px; box-shadow:0 6px 18px rgba(38,169,108,.35); user-select:none }
-    h1{ margin:8px 0 10px; font-size:26px; line-height:1.2; letter-spacing:-.02em; font-weight:900 }
-    p{ margin:6px 0; color:var(--muted) }
-    .cta{ margin-top:14px; display:block; width:100%; border-radius:14px; padding:14px 16px; font-size:16px; font-weight:700; background:var(--vp-green); color:#fff; border:none; cursor:pointer; box-shadow:0 8px 20px rgba(38,169,108,.35) }
-    .ghost{ margin-top:10px; display:block; width:100%; border-radius:14px; padding:13px 16px; font-size:15px; font-weight:600; background:transparent; color:var(--vp-green-ink); border:1px solid var(--ring); cursor:pointer }
-    small{ display:block; margin-top:12px; color:var(--muted); font-size:12px }
-    .hidden{ display:none }
-  </style>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Verify your sign-in · VoltPay</title>
+  <link rel="stylesheet" href="/styles.css" />
 </head>
 <body>
-<main class="card" role="main" aria-labelledby="title">
-  <div class="logo" aria-hidden="true">V</div>
-  <h1 id="title">Verify your email</h1>
-  <p>We’re opening the VoltPay app to complete your sign-in.</p>
-  <button class="cta" id="openBtn">Open VoltPay</button>
+  <div class="container">
+    <header class="brand-header">
+      <a class="brand" href="/">
+        <img src="/assets/voltpay.png" alt="" class="logo" width="36" height="36" />
+        <span class="wordmark">VoltPay</span>
+      </a>
+    </header>
 
-  <div id="fallback" class="hidden">
-    <button class="ghost" id="installBtn">Install VoltPay</button>
-    <small>If the app didn’t open automatically, install VoltPay and try again.</small>
-    <small id="raw-url"></small>
+    <main>
+      <section class="section">
+        <h1>Check your device</h1>
+        <p class="muted">
+          If you opened this from your Android device, the VoltPay app should launch and sign you in automatically.
+          If not, tap the button below.
+        </p>
+        <div class="meta" style="margin-top: .75rem;">
+          <a class="btn btn-primary" id="open-app" href="intent://voltpay.metalbrain.net/finishSignIn#Intent;scheme=https;package=com.metal.voltpay;end">Open VoltPay</a>
+          <button class="btn" onclick="location.href='/'">Back to home</button>
+        </div>
+      </section>
+
+      <section class="notice info">
+        Having trouble? Copy the full link from your email and open it on your Android device with VoltPay installed.
+      </section>
+    </main>
+
+    <footer class="page-foot">
+      <span>© <span id="y"></span> VoltPay</span>
+    </footer>
   </div>
-</main>
 
-<script>
+  <script>
   (function () {
     function ready(fn){ (document.readyState !== 'loading') ? fn() : document.addEventListener('DOMContentLoaded', fn); }
-
     ready(function(){
       const fullLink = window.location.href;
-      const appScheme = 'https://emailLink?url=' + encodeURIComponent(fullLink);
 
+      // Clicking this should re-open the same HTTPS link.
+      // If App Links are verified, Android will take the user straight into the app.
       const openBtn = document.getElementById('openBtn');
       const fallback = document.getElementById('fallback');
-      const raw = document.getElementById('raw-url');
-      const installBtn = document.getElementById('installBtn');
+      const rawAnchor = document.getElementById('raw-anchor');
+
+      rawAnchor.href = fullLink;
 
       function tryOpen(){
-        const start = Date.now();
-        // Attempt to open the app via custom scheme
-        window.location.href = appScheme;
+        // Re-navigate to the same link; verified App Link will deep-link to app.
+        window.location.href = fullLink;
 
-        // Show fallback after ~2s (no-op if app foregrounded)
+        // Show fallback after ~1.5s if app didn't open
         setTimeout(function(){
-          if (fallback) fallback.classList.remove('hidden');
-          if (raw) raw.textContent = fullLink;
-        }, 2000);
+          fallback.classList.remove('hidden');
+        }, 1500);
       }
 
       openBtn?.addEventListener('click', tryOpen);
-      installBtn?.addEventListener('click', function(){
-        // TODO: replace with real store URL(s)
-        alert('Install VoltPay from your app store.');
-      });
-
-      // Auto-try on load
-      tryOpen();
     });
   })();
 </script>
+  <script>
+    document.getElementById('y').textContent = new Date().getFullYear();
+  </script>
 </body>
 </html>

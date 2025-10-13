@@ -9,17 +9,20 @@ class Env {
 
   static String get apiBase {
     if (_api.isNotEmpty) {
+      debugPrint('API_BASE = $_api');
       return _api; // compile-time override wins
     }
 
     if (_local) {
       final bool isAndroid = defaultTargetPlatform == TargetPlatform.android;
       final String host = isAndroid ? '10.0.2.2' : 'localhost';
-      return 'http://$host:9099/api';
+      return 'http://$host:8080';
     }
 
     // Safe default for ALL platforms (web, emulator, real device)
-    // return 'https://voltpay-api-1018663726434.europe-west2.run.app/api';
-    return 'http://192.168.56.1:9099/api';
+
+    // return 'http://192.168.56.1:8080/api';
+    return 'http://192.168.56.1:8080';
+    // return 'https://voltpay-api-1018663726434.europe-west2.run.app';
   }
 }

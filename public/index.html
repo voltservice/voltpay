@@ -1,34 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
-    <title>VoltPay</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#26A96C" />
+  <title>VoltPay</title>
+
+  <!-- Favicons -->
+  <link rel="icon" href="/assets/favicon.ico" sizes="any" />
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="/assets/voltpay.png" />
+
+  <!-- Styles -->
+  <!-- If this file lives in /public/styles.css, reference it at /styles.css in Firebase Hosting -->
+  <link rel="stylesheet" href="/styles.css" />
 </head>
 <body>
+  <div class="container">
     <header class="brand-header">
-        <img src="logo.png" alt="VoltPay Logo" class="logo">
-        <h1>VoltPay</h1>
+      <a class="brand" href="/">
+        <img src="/assets/voltpay.png" alt="" class="logo" width="36" height="36" />
+        <span class="wordmark">VoltPay</span>
+        <span class="sr-only">Home</span>
+      </a>
+
+      <nav class="topnav" aria-label="Primary">
+        <a href="#features">Features</a>
+        <a href="#security">Security</a>
+        <a href="#get-started">Get started</a>
+      </nav>
     </header>
-    <main class="container">
-        <section class="intro">
-            <h2>Welcome to VoltPay</h2>
-            <p>Your secure and efficient payment solution.</p>
-        </section>
-        <section class="features">
-            <h2>Features</h2>
-            <ul>
-                <li>Fast Transactions</li>
-                <li>Secure Payments</li>
-                <li>User-Friendly Interface</li>
-            </ul>
-        </section>
-        <section class="get-started">
-            <h2>Get Started</h2>
-            <button class="btn-primary">Sign Up</button>
-            <button class="btn-secondary">Learn More</button>
-        </section>
+
+    <header class="page-head">
+      <h1>Fast, secure, borderless payments.</h1>
+      <p class="header-sub">
+        Send and receive money with confidence. Built with strong encryption, smart verifications, and a delightful UI.
+      </p>
+      <div class="meta" style="margin-top: .75rem;">
+        <span class="pill">Material 3 inspired</span>
+        <span class="pill">Firebase-ready</span>
+        <span class="pill">App Links enabled</span>
+      </div>
+    </header>
+
+    <main>
+      <section id="features" class="section">
+        <h2>Why VoltPay</h2>
+        <div class="grid grid-2">
+          <div>
+            <h3>Speed</h3>
+            <p>Optimized rails for quick transfers and instant confirmations.</p>
+          </div>
+          <div>
+            <h3>Security</h3>
+            <p>Multi-layer verification, App Links, and strong device checks.</p>
+          </div>
+          <div>
+            <h3>Clarity</h3>
+            <p>Clean, modern UI with clear fees and live status updates.</p>
+          </div>
+          <div>
+            <h3>Coverage</h3>
+            <p>Global currencies, local payouts, and smart routing.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="security" class="section">
+        <h2>Built-in trust</h2>
+        <p>Vault-grade encryption, per-device sign-in links, and safe fallbacks for web and mobile.</p>
+        <div class="notice info">Tip: if an email link opens the web, we’ll still complete sign-in securely.</div>
+      </section>
+
+      <section id="get-started" class="section">
+        <h2>Get started</h2>
+        <p>Ready to try VoltPay?</p>
+        <a class="btn btn-primary" href="/optin/optin.html">Install Android demo</a>
+        <a class="btn btn-ghost" href="/verify/verification.html">Test sign-in flow</a>
+      </section>
     </main>
+
+    <footer class="page-foot">
+      <span>© <span id="y"></span> VoltPay</span>
+      <span><a href="#privacy">Privacy</a> · <a href="#terms">Terms</a></span>
+    </footer>
+  </div>
+
+  <script>
+    // tiny year updater
+    document.getElementById('y').textContent = new Date().getFullYear();
+  </script>
 </body>
 </html>

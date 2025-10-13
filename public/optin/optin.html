@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#26A96C" />
+  <title>VoltPay · Android Closed Test Opt‑in</title>
+
+  <!-- Favicons (already in your project) -->
+  <link rel="icon" href="/assets/favicon.ico" sizes="any" />
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="/assets/voltpay.png" />
+
+  <!-- Base styles: assumes your existing /styles.css (no third‑party libs) -->
+  <link rel="stylesheet" href="/styles.css" />
+  <style>
+    /* Page‑specific tiny additions that piggyback your design tokens */
+    :root {
+      --success: #26A96C;
+      --warning: #B36B00;
+      --danger:  #C62828;
+    }
+    .page { max-width: 880px; margin: 0 auto; padding: 2rem 1rem 3rem; }
+    .lead { font-size: 1.125rem; color: var(--muted-text); }
+    .card { border: 1px solid var(--border); background: var(--card); border-radius: .75rem; padding: 1rem; }
+    .pill { display: inline-block; background: var(--ink-soft); color: var(--text); padding: .25rem .75rem; border-radius: 999px; font-size: .85rem; }
+    .page-head { text-align: center; margin-bottom: 1rem; }
+    .steps { display: grid; grid-template-columns: 1fr; gap: .75rem; }
+    .step { display: grid; grid-template-columns: 2.5rem 1fr; gap: .75rem; align-items: start; }
+    .step .num { width: 2.5rem; height: 2.5rem; border-radius: 999px; display: grid; place-items: center; background: var(--ink-soft); font-weight: 600; }
+    .actions { display: flex; gap: .5rem; flex-wrap: wrap; margin-top: .75rem; }
+    .btn { cursor: pointer; border: 1px solid var(--border); background: var(--card); padding: .6rem .9rem; border-radius: .6rem; }
+    .btn-primary { background: var(--text); color: #fff; border-color: var(--text); }
+    .btn-primary:focus { outline: 2px solid var(--focus-ring); }
+    .btn-primary:hover { background: color-mix(in oklab, var(--text), #000 10%); }
+    .btn-primary:active { background: color-mix(in oklab, var(--text), #000 20%); }
+    .btn-primary:disabled { background: var(--muted-text); border-color: var(--muted-text); cursor: not-allowed; }
+    .btn:focus { outline: 2px solid var(--focus-ring); }
+    .btn-secondary { background: var(--ink-soft); color: var(--text); border-color: var(--ink-soft); }
+    .btn:hover { background: color-mix(in oklab, var(--ink-soft), #000 10%); }
+    .btn:active { background: color-mix(in oklab, var(--ink-soft), #000 20%); }
+    .btn:disabled { background: var(--border); border-color: var(--border); cursor: not-allowed; }
+    .btn-ghost { background: transparent; }
+    .badge { display:inline-flex; align-items:center; gap:.35rem; padding:.25rem .5rem; border-radius:999px; background:var(--ink-soft); font-size:.85rem; }
+    .muted { color: var(--muted-text); }
+    .notice { border-left: 4px solid var(--ink-soft); padding:.75rem 1rem; border-radius:.5rem; background: color-mix(in oklab, var(--ink-soft), #fff 85%); }
+    details.faq { border:1px solid var(--border); border-radius:.5rem; padding:.75rem 1rem; }
+    details.faq + details.faq { margin-top:.5rem; }
+    .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+  </style>
+</head>
+<body>
+  <a class="sr-only" href="#main">Skip to content</a>
+
+  <header class="brand-header" role="banner">
+    <div class="container" style="display:flex; align-items:center; justify-content:space-between; gap:1rem; padding:1rem 0;">
+      <a class="brand" href="/" aria-label="VoltPay home">
+        <img src="/assets/voltpay.png" alt="" class="logo" width="36" height="36" />
+        <span class="wordmark">VoltPay</span>
+      </a>
+      <nav class="topnav" aria-label="Primary">
+        <a href="/">Home</a>
+        <a href="/optin/optin.html" aria-current="page">Opt‑in</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="page" tabindex="-1">
+    <header class="page-head">
+      <h1>Join the Android closed test</h1>
+      <p class="lead">Use the steps below to opt in and install the VoltPay demo from Google Play. This build uses secure Google & Facebook sign‑in (federated auth).</p>
+      <div class="meta" style="margin-top:.5rem; gap:.5rem; flex-wrap:wrap">
+        <span class="pill">Closed testing</span>
+        <span class="pill">Play opt‑in flow</span>
+        <span class="pill">No public listing</span>
+      </div>
+    </header>
+
+    <!-- Success banner (hidden by default). Shown if user returns after opting in) -->
+    <div id="optinSuccess" class="notice" role="status" aria-live="polite" style="display:none; margin:.75rem 0 0; border-left-color:var(--success)">
+      <strong>You're a tester now.</strong> You can install or open VoltPay from Google Play below.
+    </div>
+
+    <section aria-labelledby="steps-title" class="section" style="margin-top:1rem">
+      <h2 id="steps-title">How to install</h2>
+      <div class="card">
+        <ol class="steps" style="list-style:none; padding:0; margin:0;">
+          <li class="step">
+            <span class="num">1</span>
+            <div>
+              <div><strong>Open the opt‑in page</strong></div>
+              <p class="muted">Make sure you are signed into the same Google account you use on your Android device.</p>
+              <div class="actions">
+                <a class="btn btn-secondary" id="optInBtn" href="https://play.google.com/apps/testing/net.metalbrain.voltpay" target="_blank" rel="noopener noreferrer">Open opt‑in</a>
+                <button class="btn btn-ghost" id="copyOptIn" data-copy="https://play.google.com/apps/testing/net.metalbrain.voltpay" type="button">Copy link</button>
+              </div>
+            </div>
+          </li>
+          <li class="step">
+            <span class="num">2</span>
+            <div>
+              <div><strong>Tap <em>Become a tester</em></strong></div>
+              <p class="muted">After opting in, Google will confirm your tester status for this app.</p>
+            </div>
+          </li>
+          <li class="step">
+            <span class="num">3</span>
+            <div>
+              <div><strong>Install from Google Play</strong></div>
+              <p class="muted">Once opted in, install or open the listing directly in the Play Store app.</p>
+              <div class="actions">
+                <a class="btn btn-ghost" id="listingBtn" href="https://play.google.com/store/apps/details?id=net.metalbrain.voltpay" target="_blank" rel="noopener noreferrer">Open Play listing</a>
+                <button class="btn" id="openInPlay" type="button" hidden>Open in Play app</button>
+              </div>
+            </div>
+          </li>
+        </ol>
+        <p class="muted" style="margin:.75rem 0 0">Need the web fallback? Use the same account and continue on your phone to install.</p>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="testing-credentials" style="margin-top:1.5rem">
+      <h2 id="testing-credentials">Testing notes</h2>
+      <div class="card" role="note">
+        <strong>Federated auth:</strong> Google & Facebook are enabled. Use your own accounts or request demo test accounts if needed. No production data is accessed.
+      </div>
+    </section>
+
+    <!-- Collapsible Test Account card -->
+    <section class="section" aria-labelledby="test-account-title" style="margin-top:1.25rem">
+      <h2 id="test-account-title">Test account</h2>
+      <details class="faq">
+        <summary><strong>Show test credentials</strong></summary>
+        <div class="card" style="margin-top:.5rem">
+          <p class="muted" style="margin:.25rem 0 .75rem">Use these demo credentials if you don't want to sign in with your own accounts.</p>
+          <ul style="padding-left:1rem; margin:0">
+            <li><strong>Google:</strong> demo.voltpay.tester@gmail.com (you will be prompted on device)</li>
+            <li><strong>Facebook:</strong> <code>demo-voltpayer</code> / <code>••••••••</code> (request actual password if needed)</li>
+          </ul>
+          <p class="muted" style="margin:.75rem 0 0">Note: These are sandbox/test profiles; no production data is accessed.</p>
+        </div>
+      </details>
+    </section>
+
+    <section class="section" aria-labelledby="troubleshoot-title" style="margin-top:1.5rem">
+      <h2 id="troubleshoot-title">Troubleshooting</h2>
+      <details class="faq">
+        <summary><strong>“You’re not a tester” message</strong></summary>
+        <p class="muted">First, visit the opt‑in page above and tap <em>Become a tester</em>. Make sure the Google account shown matches the one on your device’s Play Store.</p>
+      </details>
+      <details class="faq">
+        <summary><strong>Open directly in Play on Android</strong></summary>
+        <p class="muted">If you’re browsing on Android, we’ll surface an <em>Open in Play app</em> button to jump straight to the listing after opt‑in.</p>
+      </details>
+      <details class="faq">
+        <summary><strong>Sign‑in issues</strong></summary>
+        <p class="muted">If Google/Facebook sign‑in fails, confirm you installed the <em>closed test build</em> and that your device time is correct. Contact us for a test account if needed.</p>
+      </details>
+    </section>
+
+    <nav class="section" aria-label="Secondary actions" style="margin-top:1.5rem">
+      <div class="actions">
+        <a class="btn" href="/" aria-label="Back to home">← Back to site</a>
+      </div>
+    </nav>
+  </main>
+
+  <footer class="page-foot">
+    <span>© <span id="y"></span> VoltPay</span>
+    <span><a href="#privacy">Privacy</a> · <a href="#terms">Terms</a></span>
+  </footer>
+
+  <noscript>
+    <div class="notice" role="status" style="margin:1rem">For the smoothest experience, enable JavaScript.
+      You can still use the links above to opt in and install.
+    </div>
+  </noscript>
+
+  <!-- Modular script: keep tiny helpers in /scripts/optin.js (ES module) -->
+  <script type="module" src="/scripts/optin.js"></script>
+  <script>
+    // tiny year updater (kept inline to avoid a whole module for one line)
+    document.getElementById('y').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

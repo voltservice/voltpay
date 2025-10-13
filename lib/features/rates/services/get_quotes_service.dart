@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:voltpay/core/env/env.dart';
@@ -52,8 +51,9 @@ class HttpQuoteRepository implements QuoteRepository {
   }
 
   Future<Map<String, String>> _authHeaders() async {
-    final String? token = await FirebaseAppCheck.instance.getToken(true);
-    return <String, String>{if (token != null) 'X-Firebase-AppCheck': token};
+    // final String? token = await FirebaseAppCheck.instance.getToken(true);
+    // return <String, String>{if (token != null) 'X-Firebase-AppCheck': token};
+    return <String, String>{};
   }
 
   void dispose() => _client.close();

@@ -33,16 +33,20 @@ type exchangerateAPIResp struct {
 }
 
 type QuoteDeps struct {
-	HTTP  *http.Client
+	HTTP   *http.Client
 	APIKey string
 }
 
 func (d QuoteDeps) Handle(w http.ResponseWriter, r *http.Request) {
 	q := r.URL.Query()
 	source := strings.ToUpper(strings.TrimSpace(q.Get("source")))
-	if source == "" { source = "USD" }
+	if source == "" {
+		source = "USD"
+	}
 	target := strings.ToUpper(strings.TrimSpace(q.Get("target")))
-	if target == "" { target = "EUR" }
+	if target == "" {
+		target = "EUR"
+	}
 
 	amount, _ := strconv.ParseFloat(q.Get("amount"), 64)
 	if amount <= 0 {
@@ -50,7 +54,9 @@ func (d QuoteDeps) Handle(w http.ResponseWriter, r *http.Request) {
 	}
 
 	method := strings.TrimSpace(q.Get("method"))
-	if method == "" { method = "wire" }
+	if method == "" {
+		method = "wire"
+	}
 
 	if d.APIKey == "" {
 		http.Error(w, `{"error":"missing_api_key"}`, http.StatusInternalServerError)

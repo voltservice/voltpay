@@ -123,7 +123,7 @@ class _OnboardingBoostScreenState extends State<OnboardingBoostScreen>
               // Tiny progress bar with animated current segment
               AnimatedBuilder(
                 animation: _idle!,
-                builder: (_, __) => OnboardingStepBar(
+                builder: (_, _) => OnboardingStepBar(
                   total: widget.totalSteps,
                   current: widget.stepIndex,
                   progress: _idle.value,
@@ -145,7 +145,7 @@ class _OnboardingBoostScreenState extends State<OnboardingBoostScreen>
                               _enter,
                               _float,
                             ]),
-                            builder: (_, __) {
+                            builder: (_, _) {
                               final double dy = _rise.value + _bob.value;
                               return Opacity(
                                 opacity: _fadeIn.value,

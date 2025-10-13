@@ -1,5 +1,7 @@
 // lib/features/onboarding/screens/onboarding_initial_screen.dart
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:voltpay/core/router/app_routes.dart';
 import 'package:voltpay/core/utils/buttons/app_buttons.dart';
 import 'package:voltpay/presentation/widgets/onboarding_step_bar.dart';
 
@@ -107,7 +109,7 @@ class _OnboardingInitialScreenState extends State<OnboardingInitialScreen>
             children: <Widget>[
               AnimatedBuilder(
                 animation: _idle,
-                builder: (_, __) => OnboardingStepBar(
+                builder: (_, _) => OnboardingStepBar(
                   total: widget.totalSteps,
                   current: widget.stepIndex,
                   progress: _idle.value,
@@ -127,7 +129,7 @@ class _OnboardingInitialScreenState extends State<OnboardingInitialScreen>
                               _enter,
                               _float,
                             ]),
-                            builder: (_, __) {
+                            builder: (_, _) {
                               final double dy = _rise.value + _bob.value;
                               return Opacity(
                                 opacity: _fadeIn.value,
@@ -182,7 +184,7 @@ class _OnboardingInitialScreenState extends State<OnboardingInitialScreen>
                             isFullWidth: true,
                             onPressed: () {
                               _resetIdle();
-                              widget.onGetStarted();
+                              context.goNamed(AppRoute.obnlastpg.name);
                             },
                           ),
                           const SizedBox(height: 24),

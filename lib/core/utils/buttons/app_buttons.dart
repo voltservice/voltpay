@@ -23,7 +23,9 @@ class AppButton extends StatelessWidget {
   final Color? customBorderColor;
   final EdgeInsetsGeometry? padding;
   final Gradient? gradient;
-  final double? customWidth;
+  final double? customWidth; // tighter when icon-only
+  final double spacing; // no gap if no label
+  final bool centerIconOnly;
 
   const AppButton({
     required this.text,
@@ -45,15 +47,17 @@ class AppButton extends StatelessWidget {
     this.padding,
     this.gradient,
     this.customWidth,
+    this.spacing = 0,
+    this.centerIconOnly = false,
   });
 
   double get _height => switch (size) {
-        ButtonSize.extraSmall => 28,
-        ButtonSize.small => 36,
-        ButtonSize.medium => 44,
-        ButtonSize.large => 52,
-        ButtonSize.extraLarge => 60,
-      };
+    ButtonSize.extraSmall => 28,
+    ButtonSize.small => 36,
+    ButtonSize.medium => 44,
+    ButtonSize.large => 52,
+    ButtonSize.extraLarge => 60,
+  };
 
   TextStyle _textStyle(BuildContext ctx) {
     final TextTheme text = Theme.of(ctx).textTheme;
@@ -96,25 +100,27 @@ class AppButton extends StatelessWidget {
     if (gradient != null) {
       return Colors.transparent;
     }
-    if (isOutlined || type == ButtonType.outline) {
-      return Colors.transparent;
-    }
+
+    // ✅ If caller explicitly gave a BG, use it (even for outline)
     if (customBackgroundColor != null) {
       return customBackgroundColor!;
     }
 
+    if (isOutlined || type == ButtonType.outline) {
+      return Colors.transparent; // default outline bg is transparent
+    }
+
     final ColorScheme s = Theme.of(ctx).colorScheme;
     final Color disabled = s.onSurface.withCustomOpacity(0.12);
-
     if (states.contains(WidgetState.disabled)) {
       return disabled;
     }
 
     Color base = switch (type) {
       ButtonType.primary => s.primary,
-      ButtonType.secondary => s.secondaryContainer, // tonal filled
-      ButtonType.tertiary => Colors.transparent, // text button
-      ButtonType.outline => Colors.transparent,
+      ButtonType.secondary => s.secondaryContainer,
+      ButtonType.tertiary => Colors.transparent,
+      ButtonType.outline => Colors.transparent, // fallback if hit here
       ButtonType.fill => Colors.transparent,
     };
 
@@ -123,8 +129,43 @@ class AppButton extends StatelessWidget {
     } else if (states.contains(WidgetState.hovered)) {
       base = _tint(base, -0.04);
     }
+
     return base;
   }
+
+  // Color _bg(BuildContext ctx, Set<WidgetState> states) {
+  //   if (gradient != null) {
+  //     return Colors.transparent;
+  //   }
+  //   if (isOutlined || type == ButtonType.outline) {
+  //     return Colors.transparent;
+  //   }
+  //   if (customBackgroundColor != null) {
+  //     return customBackgroundColor!;
+  //   }
+  //
+  //   final ColorScheme s = Theme.of(ctx).colorScheme;
+  //   final Color disabled = s.onSurface.withCustomOpacity(0.12);
+  //
+  //   if (states.contains(WidgetState.disabled)) {
+  //     return disabled;
+  //   }
+  //
+  //   Color base = switch (type) {
+  //     ButtonType.primary => s.primary,
+  //     ButtonType.secondary => s.secondaryContainer, // tonal filled
+  //     ButtonType.tertiary => Colors.transparent, // text button
+  //     ButtonType.outline => Colors.transparent,
+  //     ButtonType.fill => Colors.transparent,
+  //   };
+  //
+  //   if (states.contains(WidgetState.pressed)) {
+  //     base = _tint(base, -0.08);
+  //   } else if (states.contains(WidgetState.hovered)) {
+  //     base = _tint(base, -0.04);
+  //   }
+  //   return base;
+  // }
 
   BorderSide? _border(BuildContext ctx, Set<WidgetState> states) {
     final ColorScheme s = Theme.of(ctx).colorScheme;
@@ -148,28 +189,29 @@ class AppButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final BorderRadius radius = BorderRadius.circular(isRounded ? 100 : 12);
-    final EdgeInsetsGeometry resolvedPadding = padding ??
+    final EdgeInsetsGeometry resolvedPadding =
+        padding ??
         switch (size) {
           ButtonSize.extraSmall => const EdgeInsets.symmetric(
-              horizontal: 10,
-              vertical: 6,
-            ),
+            horizontal: 10,
+            vertical: 6,
+          ),
           ButtonSize.small => const EdgeInsets.symmetric(
-              horizontal: 12,
-              vertical: 8,
-            ),
+            horizontal: 12,
+            vertical: 8,
+          ),
           ButtonSize.medium => const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 12,
-            ),
+            horizontal: 16,
+            vertical: 12,
+          ),
           ButtonSize.large => const EdgeInsets.symmetric(
-              horizontal: 20,
-              vertical: 16,
-            ),
+            horizontal: 20,
+            vertical: 16,
+          ),
           ButtonSize.extraLarge => const EdgeInsets.symmetric(
-              horizontal: 24,
-              vertical: 18,
-            ),
+            horizontal: 24,
+            vertical: 18,
+          ),
         };
 
     final WidgetStateProperty<Color?> bg = WidgetStateProperty.resolveWith(
@@ -180,8 +222,8 @@ class AppButton extends StatelessWidget {
     );
     final WidgetStateProperty<BorderSide?> side =
         WidgetStateProperty.resolveWith(
-      (Set<WidgetState> s) => _border(context, s),
-    );
+          (Set<WidgetState> s) => _border(context, s),
+        );
     final WidgetStateProperty<OutlinedBorder?> shape = WidgetStateProperty.all(
       RoundedRectangleBorder(borderRadius: radius),
     );
@@ -207,12 +249,12 @@ class AppButton extends StatelessWidget {
       overlayColor: WidgetStateProperty.resolveWith(
         (Set<WidgetState> s) =>
             Theme.of(context).colorScheme.primary.withCustomOpacity(
-                  s.contains(WidgetState.pressed)
-                      ? 0.08
-                      : s.contains(WidgetState.hovered)
-                          ? 0.04
-                          : 0.0,
-                ),
+              s.contains(WidgetState.pressed)
+                  ? 0.08
+                  : s.contains(WidgetState.hovered)
+                  ? 0.04
+                  : 0.0,
+            ),
       ),
     );
 
@@ -226,8 +268,8 @@ class AppButton extends StatelessWidget {
     final List<Widget> row = icon == null
         ? <Widget>[label]
         : iconRight
-            ? <Widget>[label, const SizedBox(width: 8), icon!]
-            : <Widget>[icon!, const SizedBox(width: 8), label];
+        ? <Widget>[label, const SizedBox(width: 8), icon!]
+        : <Widget>[icon!, const SizedBox(width: 8), label];
 
     final Widget child = isLoading
         ? SizedBox(
@@ -243,30 +285,30 @@ class AppButton extends StatelessWidget {
 
     final ButtonStyleButton button = switch (type) {
       ButtonType.primary => ElevatedButton(
-          onPressed: safeOnPressed,
-          style: style,
-          child: child,
-        ),
+        onPressed: safeOnPressed,
+        style: style,
+        child: child,
+      ),
       ButtonType.secondary => FilledButton(
-          onPressed: safeOnPressed,
-          style: style,
-          child: child,
-        ),
+        onPressed: safeOnPressed,
+        style: style,
+        child: child,
+      ),
       ButtonType.tertiary => TextButton(
-          onPressed: safeOnPressed,
-          style: style,
-          child: child,
-        ),
+        onPressed: safeOnPressed,
+        style: style,
+        child: child,
+      ),
       ButtonType.outline => OutlinedButton(
-          onPressed: safeOnPressed,
-          style: style,
-          child: child,
-        ),
+        onPressed: safeOnPressed,
+        style: style,
+        child: child,
+      ),
       ButtonType.fill => FilledButton.tonal(
-          onPressed: safeOnPressed,
-          style: style,
-          child: child,
-        ),
+        onPressed: safeOnPressed,
+        style: style,
+        child: child,
+      ),
     };
 
     final Widget core = SizedBox(
