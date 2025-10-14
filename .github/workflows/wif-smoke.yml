@@ -10,7 +10,7 @@ env:
   PROJECT_NUMBER: 1018663726434
   POOL_ID: voltpay-pool
   PROVIDER_ID: github-actions
-  SA_EMAIL: voltservice@metalbrain.net
+  SA_EMAIL: voltpay-service-account@micro-harbor-469912-u6.iam.gserviceaccount.com
 
 jobs:
   wif-test:
