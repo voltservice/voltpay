@@ -1,7 +1,6 @@
 name: Inspect OIDC Token Claims
-
 on:
-  workflow_dispatch:
+  workflow_dispatch: {}
 
 permissions:
   id-token: write
@@ -11,21 +10,39 @@ jobs:
   inspect-token:
     runs-on: ubuntu-latest
     steps:
-      - name: Generate OIDC token and decode
+      - name: Generate OIDC token with custom audience and decode
         id: oidc
+        env:
+          AUDIENCE: voltpay-debug
         run: |
           echo "=== Requesting GitHub OIDC token ==="
-          TOKEN=$(curl -s -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
-                      "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=voltpay-debug")
-          echo "::add-mask::$TOKEN" # mask token in logs
+          # Use the built-in request token/url to mint an ID token for a custom audience
+          TOKEN_JSON="$(curl -s -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+            "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=${AUDIENCE}")"
+          TOKEN="$(echo "$TOKEN_JSON" | jq -r .value)"
+          echo "::add-mask::$TOKEN"
 
-          echo "=== Raw JWT token ==="
-          echo "$TOKEN" | jq -r .value > token.jwt
+          echo "=== Saving JWT to token.jwt ==="
+          echo "$TOKEN" > token.jwt
 
-          echo "=== Decoding header and payload ==="
-          HEADER=$(cut -d "." -f1 token.jwt | base64 -d 2>/dev/null)
-          PAYLOAD=$(cut -d "." -f2 token.jwt | base64 -d 2>/dev/null)
+          # Robust base64url decode function (handles padding)
+          b64urldecode() {
+            local b64=${1//-/+}; b64=${b64//_//};
+            local pad=$(( (4 - ${#b64} % 4) % 4 ))
+            printf '%s' "$b64" | sed -E "s/$/$(printf '=%.0s' $(seq 1 $pad))/" | base64 -d
+          }
+
+          HEADER="$(cut -d '.' -f1 token.jwt)"
+          PAYLOAD="$(cut -d '.' -f2 token.jwt)"
+
           echo "---- HEADER ----"
-          echo "$HEADER" | jq .
+          b64urldecode "$HEADER" | jq .
+
           echo "---- PAYLOAD ----"
-          echo "$PAYLOAD" | jq .
+          b64urldecode "$PAYLOAD" | jq .
+
+          # Outputs (no deprecated set-output)
+          {
+            echo "jwt_token=$TOKEN"
+            echo "payload=$(b64urldecode "$PAYLOAD" | jq -c .)"
+          } >> "$GITHUB_OUTPUT"
