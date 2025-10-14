@@ -10,14 +10,13 @@ env:
   PROJECT_NUMBER: 1018663726434
   POOL_ID: voltpay-pool
   PROVIDER_ID: github-actions
-  SA_EMAIL: voltpay-service-account@micro-harbor-469912-u6.iam.gserviceaccount.com
+  SA_EMAIL: voltservice@metalbrain.net
 
 jobs:
   wif-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - name: Show token claims
         run: |
           echo "GITHUB_REPOSITORY=$GITHUB_REPOSITORY"
@@ -28,7 +27,8 @@ jobs:
           echo "::add-mask::$TOKEN"
           PAYLOAD=$(echo "$TOKEN" | cut -d '.' -f2 | base64 -d 2>/dev/null || true)
           echo "$PAYLOAD" | jq '{repository, ref, workflow_ref, actor, event_name}'
-
+          echo "::set-output name=token::$TOKEN"
+          echo "::set-output name=payload::$PAYLOAD"
       - name: Auth via WIF (no keys)
         uses: google-github-actions/auth@v2
         with:
