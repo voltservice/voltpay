@@ -29,30 +29,43 @@ jobs:
           create_credentials_file: true
           export_environment_variables: true
           cleanup_credentials: true
+          token_format: 'access_token'
+          scopes: |
+              https://www.googleapis.com/auth/risc.configuration.readwrite
+              https://www.googleapis.com/auth/risc.verify
 
       - name: Register receiver (stream:update)
+        env:
+          ACCESS_TOKEN: ${{ steps.auth.outputs.access_token }}
+          RECEIVER_URL: ${{ env.RECEIVER_URL }}
+        continue-on-error: true
         run: |
-          ACCESS_TOKEN=$(gcloud auth print-access-token \
-            --scopes=https://www.googleapis.com/auth/risc.configuration.readwrite,https://www.googleapis.com/auth/risc.verify)
-          cat > body.json <<EOF
-          {
-            "delivery": {
-              "delivery_method": "https://schemas.openid.net/secevent/risc/delivery-method/push",
-              "url": "${RECEIVER_URL}"
-            },
-            "events_requested": [
-              "https://schemas.openid.net/secevent/risc/event-type/account-disabled",
-              "https://schemas.openid.net/secevent/risc/event-type/account-enabled",
-              "https://schemas.openid.net/secevent/risc/event-type/account-credential-change-required",
-              "https://schemas.openid.net/secevent/risc/event-type/verification"
-            ]
-          }
-          EOF
-          curl -sfS -H "Authorization: Bearer $ACCESS_TOKEN" -H "Content-Type: application/json" \
-            -d @body.json "https://risc.googleapis.com/v1beta/stream:update"
+          jq -n --arg url "$RECEIVER_URL" '{
+           delivery:{delivery_method:"https://schemas.openid.net/secevent/risc/delivery-method/push",url:$url},
+           events_requested:[
+             "https://schemas.openid.net/secevent/risc/event-type/account-disabled",
+             "https://schemas.openid.net/secevent/risc/event-type/account-enabled",
+             "https://schemas.openid.net/secevent/risc/event-type/account-credential-change-required",
+             "https://schemas.openid.net/secevent/risc/event-type/verification"
+           ]
+          }' > body.json
+          
+          # Make the call and show response body for debugging if it fails
+          set -e
+          http_code=$(curl -sS -o resp.json -w "%{http_code}" \
+           -H "Authorization: Bearer $ACCESS_TOKEN" \
+           -H "Content-Type: application/json" \
+           -d @body.json "https://risc.googleapis.com/v1beta/stream:update")
+          cat resp.json
+          test "$http_code" -ge 200 -a "$http_code" -lt 300
 
-      - name: Send verification token (stream:verify)
-        run: |
-          ACCESS_TOKEN=$(gcloud auth print-access-token --scopes=https://www.googleapis.com/auth/risc.verify)
-          curl -sfS -H "Authorization: Bearer $ACCESS_TOKEN" -H "Content-Type: application/json" \
-            -d '{"state":"voltpay-ci-probe"}' "https://risc.googleapis.com/v1beta/stream:verify"
+          - name: stream:verify
+            env:
+              ACCESS_TOKEN: ${{ steps.auth.outputs.access_token }}
+            run: |
+              http_code=$(curl -sS -o resp.json -w "%{http_code}" \
+                -H "Authorization: Bearer $ACCESS_TOKEN" \
+                -H "Content-Type: application/json" \
+                -d '{"state":"voltpay-ci-probe"}' "https://risc.googleapis.com/v1beta/stream:verify")
+              cat resp.json
+              test "$http_code" -ge 200 -a "$http_code" -lt 300
