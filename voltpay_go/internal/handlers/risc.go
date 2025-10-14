@@ -4,189 +4,176 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io"
+	"log"
 	"net/http"
-	"strings"
+	"os"
 	"time"
 
-	"github.com/go-chi/chi/v5/middleware"
-	"github.com/lestrrat-go/jwx/v2/jwk"
-	"github.com/lestrrat-go/jwx/v2/jwt"
+	"voltpay_go/internal/risc"
 )
 
-const (
-	googleIssuer = "https://accounts.google.com"
-	googleJWKS   = "https://www.googleapis.com/oauth2/v3/certs"
-)
+// ---- Public API ------------------------------------------------------------
 
-// RISCReceiverWithConfig allows you to override issuer/JWKS (useful for local tests).
-func RISCReceiverWithConfig(issuer string, jwksURL string, allowedAUDs []string) http.HandlerFunc {
-	fmt.Println("[cap] issuer:", issuer)
-	fmt.Println("[cap] jwks:", jwksURL)
-	fmt.Println("[cap] allowed audiences:", allowedAUDs)
-	httpClient := &http.Client{Timeout: 5 * time.Second}
-
-	allowed := make(map[string]struct{}, len(allowedAUDs))
-	for _, a := range allowedAUDs {
-		if a = strings.TrimSpace(a); a != "" {
-			allowed[a] = struct{}{}
-		}
+// RISCReceiver returns an http.HandlerFunc that accepts Google CAP (RISC) SETs,
+// using Google's discovery document to find the JWKS URI.
+func RISCReceiver(clientIDs []string) http.HandlerFunc {
+	jwksURL, err := discoverCAPJWKS(context.Background())
+	if err != nil {
+		// Fallback to the well-known stable JWKS path if discovery fails.
+		log.Printf("[RISC] discovery failed (%v); falling back to default JWKS URL", err)
+		jwksURL = "https://www.googleapis.com/oauth2/v3/certs"
 	}
-
-	return func(w http.ResponseWriter, r *http.Request) {
-		ctx := r.Context()
-
-		raw, err := extractTokenFromBody(r.Body)
-		if err != nil || raw == "" {
-			http.Error(w, "missing token", http.StatusBadRequest)
-			return
-		}
-
-		// Fetch JWKS now; if it fails, return 503 instead of panicking
-		keyset, err := jwk.Fetch(ctx, jwksURL, jwk.WithHTTPClient(httpClient))
-		if err != nil || keyset == nil || keyset.Len() == 0 {
-			http.Error(w, "jwks unavailable", http.StatusServiceUnavailable)
-			return
-		}
-
-		// Parse & verify JWT using the JWKS and issuer
-		tok, err := jwt.Parse(
-			[]byte(raw),
-			jwt.WithKeySet(keyset), // <- correct usage; no WithVerifyAuto
-			jwt.WithIssuer(issuer),
-			jwt.WithAcceptableSkew(5*time.Second), // allow small clock skew
-		)
-		if err != nil {
-			// TEMP DEBUG: return the real reason
-			http.Error(w, "invalid token: "+err.Error(), http.StatusBadRequest)
-			// and log it server-side, too
-			fmt.Println("[risc] parse/verify error:", err)
-			return
-		}
-
-		// Audience check (iterate values, not indices!)
-		okAud := false
-		for _, aud := range tok.Audience() {
-			if _, ok := allowed[aud]; ok {
-				okAud = true
-				break
-			}
-		}
-		if !okAud {
-			http.Error(w, "aud mismatch", http.StatusBadRequest)
-			return
-		}
-
-		// Subject (Google "sub") or nested subject identifier
-		sub := tok.Subject()
-		if sub == "" {
-			if s, _ := getString(tok, "subject", "identifier", "value"); s != "" {
-				sub = s
-			}
-		}
-		email, _ := getString(tok, "email") // optional
-
-		userID := resolveLocalUserID(ctx, sub, email)
-		if userID == "" {
-			// Still return 204 so Google doesn't retry, but you can log req id
-			_ = middleware.GetReqID(ctx)
-			w.WriteHeader(http.StatusNoContent)
-			return
-		}
-
-		events, ok := tok.PrivateClaims()["events"].(map[string]any)
-		if !ok || len(events) == 0 {
-			w.WriteHeader(http.StatusNoContent)
-			return
-		}
-
-		for eventType, body := range events {
-			_ = handleRISCEvent(ctx, userID, eventType, body)
-		}
-
-		w.WriteHeader(http.StatusNoContent)
-	}
+	return newRISCHandler(jwksURL, clientIDs)
 }
 
-// RISCReceiver Production-default receiver (Google issuer + JWKS)
-func RISCReceiver(allowedAUDs []string) http.HandlerFunc {
-	return RISCReceiverWithConfig(googleIssuer, googleJWKS, allowedAUDs)
+// RISCReceiverWithConfig lets you plug a custom issuer/JWKS (useful for tests).
+// NOTE: The verifier in risc.NewReceiver enforces Google's issuer
+// (https://accounts.google.com). The custom issuer is logged but not enforced here.
+func RISCReceiverWithConfig(issuer, jwksURL string, clientIDs []string) http.HandlerFunc {
+	if issuer != "" {
+		log.Printf("[RISC] (with-config) issuer hint = %s (verifier still expects https://accounts.google.com)", issuer)
+	}
+	if jwksURL == "" {
+		u, err := discoverCAPJWKS(context.Background())
+		if err == nil {
+			jwksURL = u
+		} else {
+			jwksURL = "https://www.googleapis.com/oauth2/v3/certs"
+		}
+	}
+	return newRISCHandler(jwksURL, clientIDs)
 }
 
-// --- helpers ---
+// ---- Internal wiring -------------------------------------------------------
 
-func extractTokenFromBody(rc io.ReadCloser) (string, error) {
-	defer func(rc io.ReadCloser) {
-		err := rc.Close()
-		if err != nil {
+func newRISCHandler(jwksURL string, clientIDs []string) http.HandlerFunc {
+	httpClient := &http.Client{Timeout: 8 * time.Second}
+	kp := &risc.GoogleJWKS{
+		JWKSURL: jwksURL,
+		HTTP:    httpClient,
+	}
+	log.Printf("[RISC] using JWKS: %s", jwksURL)
 
-		}
-	}(rc)
-	b, err := io.ReadAll(rc)
+	mitigator := &risc.NoopMitigator{Logger: log.Default()}
+
+	issuer := os.Getenv("RISC_TEST_ISSUER")
+	if issuer == "" {
+		log.Printf("[RISC] TEST issuer active: %s", issuer)
+		return risc.NewReceiverWithIssuer(kp, clientIDs, issuer, func(ctx context.Context, claims *risc.Claims) error {
+			log.Printf("[RISC] TEST issuer: %s", issuer)
+			return handleEvents(ctx, mitigator, claims.RawEvents(), claims.Subject())
+		})
+	}
+
+	// Handle function maps incoming RISC events to mitigation actions.
+	// Bridge risc.NewReceiver (expects its own claims type) via a tiny adapter.
+	return risc.NewReceiver(kp, clientIDs, func(ctx context.Context, claims *risc.Claims) error {
+		return handleEvents(ctx, mitigator, claims.Events, claims.Subject())
+	})
+}
+
+// ---- Discovery -------------------------------------------------------------
+
+// Google CAP discovery doc: https://accounts.google.com/.well-known/risc-configuration
+// We only need the jwks_uri.
+func discoverCAPJWKS(ctx context.Context) (string, error) {
+	req, _ := http.NewRequestWithContext(ctx, "GET", "https://accounts.google.com/.well-known/risc-configuration", nil)
+	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return "", err
 	}
-	raw := strings.TrimSpace(string(b))
-	if raw == "" {
-		return "", errors.New("empty body")
-	}
-	// accept either raw JWT or JSON {token|jwt|security_event_token}
-	if strings.HasPrefix(raw, "{") {
-		var m map[string]any
-		if err := json.Unmarshal(b, &m); err != nil {
-			return "", err
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+
 		}
-		for _, k := range []string{"token", "jwt", "security_event_token"} {
-			if v, ok := m[k].(string); ok && v != "" {
-				return v, nil
-			}
-		}
-		return "", errors.New("no token field")
+	}(resp.Body)
+	if resp.StatusCode/100 != 2 {
+		return "", errors.New("non-2xx discovery response")
 	}
-	return raw, nil
+	var disc struct {
+		JWKSURI string `json:"jwks_uri"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&disc); err != nil {
+		return "", err
+	}
+	if disc.JWKSURI == "" {
+		return "", errors.New("empty jwks_uri in discovery")
+	}
+	return disc.JWKSURI, nil
 }
 
-func getString(tok jwt.Token, keys ...string) (string, bool) {
-	claim := tok.PrivateClaims()
-	var cur any = claim
-	for _, k := range keys {
-		m, ok := cur.(map[string]any)
-		if !ok {
-			return "", false
-		}
-		cur, ok = m[k]
-		if !ok {
-			return "", false
+// ---- Event handling (maps CAP events to mitigations) -----------------------
+
+func handleEvents(ctx context.Context, m risc.Mitigator, events map[string]any, subject string) error {
+	// Google RISC event types we care about.
+	const (
+		evAccountDisabled          = "https://schemas.openid.net/secevent/risc/event-type/account-disabled"
+		evAccountEnabled           = "https://schemas.openid.net/secevent/risc/event-type/account-enabled"
+		evCredentialChangeRequired = "https://schemas.openid.net/secevent/risc/event-type/account-credential-change-required"
+		evVerification             = "https://schemas.openid.net/secevent/risc/event-type/verification"
+	)
+
+	uid := subject
+	// Best-effort: if subject not set, try to pull something from the event body
+	// (providers differ; keep this lenient).
+	if uid == "" {
+		if s := findSubjectInEvents(events); s != "" {
+			uid = s
 		}
 	}
-	s, ok := cur.(string)
-	return s, ok
-}
 
-// Decide what to do per event type
-func handleRISCEvent(ctx context.Context, userID string, eventType string, body any) error {
-	switch eventType {
-	case "https://schemas.openid.net/secevent/risc/event-type/credentials-changed",
-		"https://schemas.openid.net/secevent/risc/event-type/account-disabled",
-		"https://schemas.openid.net/secevent/risc/event-type/sessions-revoked":
-		if err := MarkUserHighRisk(ctx, userID); err != nil {
-			return err
+	for et := range events {
+		switch et {
+		case evVerification:
+			// Verification probe from Google—nothing to do, just ack (204 is returned by caller).
+			log.Printf("[RISC] verification event ok (sub=%s)", uid)
+
+		case evAccountDisabled:
+			log.Printf("[RISC] account-disabled (sub=%s) -> MarkHighRisk + KillSessions", uid)
+			_ = m.MarkHighRisk(ctx, uid)
+			_ = m.KillSessions(ctx, uid)
+
+		case evAccountEnabled:
+			// You might want to lower the risk flag, or simply log.
+			log.Printf("[RISC] account-enabled (sub=%s)", uid)
+
+		case evCredentialChangeRequired:
+			log.Printf("[RISC] credential-change-required (sub=%s) -> MarkHighRisk + KillSessions", uid)
+			_ = m.MarkHighRisk(ctx, uid)
+			_ = m.KillSessions(ctx, uid)
+
+		default:
+			// Unknown/less common events—log only for now.
+			log.Printf("[RISC] unhandled event: %s (sub=%s)", et, uid)
 		}
-		if err := KillSessions(ctx, userID); err != nil {
-			return err
-		}
-	default:
-		// log for visibility if you like
 	}
 	return nil
 }
 
-// ---- stubs: implement in your codebase ----
-
-func resolveLocalUserID(ctx context.Context, googleSub string, email string) string {
-	return "" // TODO
+// Pull a "subject" from event payloads if not present at top-level claims.
+func findSubjectInEvents(events map[string]any) string {
+	type subj struct {
+		Subject string `json:"subject"`
+		Sub     string `json:"sub"`
+		Email   string `json:"email"`
+	}
+	for _, v := range events {
+		// expect each v to be an object; marshal/unmarshal to inspect loosely
+		b, _ := json.Marshal(v)
+		var s subj
+		if err := json.Unmarshal(b, &s); err == nil {
+			if s.Subject != "" {
+				return s.Subject
+			}
+			if s.Sub != "" {
+				return s.Sub
+			}
+			if s.Email != "" {
+				return s.Email
+			}
+		}
+	}
+	return ""
 }
-
-func MarkUserHighRisk(ctx context.Context, userID string) error { return nil }
-func KillSessions(ctx context.Context, userID string) error     { return nil }

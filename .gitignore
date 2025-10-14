@@ -49,6 +49,8 @@ C:/Users/Metal/voltpay/cert
 voltpay_lm_feature/
 
 voltpay_go/.env
+voltpay_go/env.yaml
+
 
 functions/go
 pkg
