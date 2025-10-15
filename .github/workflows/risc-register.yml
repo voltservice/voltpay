@@ -11,7 +11,7 @@ env:
   POOL_ID: voltpay-pool
   PROVIDER_ID: github-actions
   SA_EMAIL: voltpay-service-account@micro-harbor-469912-u6.iam.gserviceaccount.com
-  RECEIVER_URL: https://metalbrain.net/risc/receiver
+  RECEIVER_URL: https://voltpay-api-1018663726434.europe-west2.run.app/risc/receiver
 
 jobs:
   register:
@@ -27,7 +27,7 @@ jobs:
           workload_identity_provider: projects/${{ env.PROJECT_NUMBER }}/locations/global/workloadIdentityPools/${{ env.POOL_ID }}/providers/${{ env.PROVIDER_ID }}
           service_account: ${{ env.SA_EMAIL }}
           token_format: access_token
-          scopes: |
+          access_token_scopes: |
             https://www.googleapis.com/auth/risc.configuration.readwrite
             https://www.googleapis.com/auth/risc.verify
 
