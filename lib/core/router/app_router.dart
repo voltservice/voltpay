@@ -5,7 +5,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:voltpay/core/auth/hooks/auth_policy_client.dart';
+import 'package:voltpay/core/auth/hooks/models.dart';
+import 'package:voltpay/core/auth/provider/auth_policy_providers.dart';
 import 'package:voltpay/core/auth/provider/auth_provider.dart';
+import 'package:voltpay/core/auth/provider/ensure_profile_provider.dart';
 import 'package:voltpay/core/auth/repository/email_passwordless_login_repo.dart';
 import 'package:voltpay/core/auth/ui/email_entry_screen.dart';
 import 'package:voltpay/core/auth/ui/email_verification_pending_screen.dart';
@@ -20,7 +24,11 @@ import 'package:voltpay/features/home/ui/home_shell.dart';
 import 'package:voltpay/features/home/ui/payments_screen.dart';
 import 'package:voltpay/features/home/ui/recipients_screen.dart';
 import 'package:voltpay/features/onboarding/ui/service_screen.dart';
+import 'package:voltpay/features/paymentmethod/presentation/choose_pay_method_page.dart';
 import 'package:voltpay/features/rates/presentation/rates_page.dart';
+import 'package:voltpay/features/recipient/presentation/add_money_page.dart';
+import 'package:voltpay/features/recipient/presentation/add_recipient_page.dart';
+import 'package:voltpay/features/topup/presentation/top_up_page.dart';
 import 'package:voltpay/presentation/views/onboarding_login_or_register.dart';
 import 'package:voltpay/presentation/widgets/onboarding_flow.dart';
 import 'package:voltpay/splash/splash_screen.dart';
@@ -61,6 +69,10 @@ class _ShellScaffold extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: appBarBg,
         foregroundColor: appBarFg,
+        elevation: 0,
+        centerTitle: true,
+        iconTheme: IconThemeData(color: appBarFg),
+        titleSpacing: 0,
         title: Text(
           'VoltPay',
           // inherit color from foregroundColor (no hardcoded Colors.green)
@@ -135,6 +147,29 @@ final GoRouter appRouter = GoRouter(
                 return EmailEntryScreen(
                   onClose: () => context.pop(),
                   onNext: (String email) async {
+                    // (Optional) Preflight:
+                    final AuthPolicyClient policy = ref.read(
+                      authPolicyClientProvider,
+                    );
+                    final BeforeCreateResult pre = await policy.beforeCreate(
+                      email: email,
+                      providerId: ProviderId.emailLink,
+                    );
+                    final bool allowed = pre.maybeWhen(
+                      allow: (_, _) => true,
+                      orElse: () => false,
+                    );
+                    if (!allowed) {
+                      final String msg = pre.map(
+                        allow: (_) => '',
+                        deny: (dynamic d) =>
+                            d.errorMessage ?? 'Sign up not allowed.',
+                      );
+                      ScaffoldMessenger.of(
+                        context,
+                      ).showSnackBar(SnackBar(content: Text(msg)));
+                      return;
+                    }
                     final EmailPasswordlessLoginRepo repo = ref.read(
                       emailPasswordlessLoginRepoProvider,
                     );
@@ -164,10 +199,60 @@ final GoRouter appRouter = GoRouter(
                           .read(emailPasswordlessLoginRepoProvider)
                           .sendEmailLink(e);
                     },
+                    onApproved: () async {
+                      final EmailPasswordlessLoginRepo repo = await ref.read(
+                        emailPasswordlessLoginRepoProvider,
+                      );
+                      final String? link = await repo
+                          .maybeExtractLinkFromClipboard();
+                      if (link != null || !repo.isEmailLink(link ?? '')) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('No sign-in link found.'),
+                          ),
+                        );
+                        return;
+                      }
+                      try {
+                        final User user = await repo.completeSignInFromLink(
+                          link: link ?? '',
+                          email: email,
+                        );
+                        if (user.email == null) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('No email provided')),
+                          );
+                        }
+                        final bool ok = await ref.read(
+                          ensureProfileCallProvider,
+                        )();
+                        debugPrint('ensureProfile -> $ok');
+                        if (!ok) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Email not verified.'),
+                            ),
+                          );
+                        }
+                        if (context.mounted) {
+                          context.goNamed(AppRoute.service.name);
+                        }
+                      } catch (e) {
+                        ScaffoldMessenger.of(
+                          context,
+                        ).showSnackBar(SnackBar(content: Text(e.toString())));
+                      }
+                    },
                   ),
             );
           },
         ),
+        // GoRoute(
+        //   name: AppRoute.finishSignIn.name,
+        //   path: AppRoute.finishSignIn.path,
+        //   builder: (BuildContext context, GoRouterState state) =>
+        //       const FinishSignInPage(),
+        // ),
         GoRoute(
           name: AppRoute.service.name,
           path: AppRoute.service.path,
@@ -215,7 +300,31 @@ final GoRouter appRouter = GoRouter(
             ),
           ],
         ),
+        GoRoute(
+          name: AppRoute.addMoney.name,
+          path: AppRoute.addMoney.path,
+          builder: (BuildContext context, GoRouterState state) =>
+              const AddMoneyPage(),
+        ),
+        GoRoute(
+          name: AppRoute.recipientPicker.name,
+          path: AppRoute.recipientPicker.path,
+          builder: (BuildContext context, GoRouterState state) =>
+              const AddRecipientPage(),
+        ),
         // add more routes here; they all inherit the AppBar + ThemeSwitcher
+        GoRoute(
+          path: AppRoute.topup.path,
+          name: AppRoute.topup.name,
+          builder: (BuildContext context, GoRouterState state) =>
+              const TopUpPage(),
+        ),
+        GoRoute(
+          path: AppRoute.paymentMethod.path,
+          name: AppRoute.paymentMethod.name,
+          builder: (BuildContext context, GoRouterState state) =>
+              const ChoosePayMethodPage(),
+        ),
         GoRoute(
           path: AppRoute.login.path,
           name: AppRoute.login.name,

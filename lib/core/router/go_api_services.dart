@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 class GoApiService {
   static const String _baseUrl = String.fromEnvironment(
     'GO_API_BASE',
-    defaultValue: 'http://10.0.2.2:9099', // Android emulator → host
+    defaultValue: 'http://192.168.56.1:8080', // Android emulator → host
   );
 
   /// Optional [client] lets tests inject a mock. In app code you can ignore it.

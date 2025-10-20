@@ -7,18 +7,25 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:voltpay/core/auth/domain/AuthApiConfig.dart';
+import 'package:voltpay/core/env/env.dart';
 import 'package:voltpay/core/providers/observers.dart';
 import 'package:voltpay/core/router/app_router.dart';
 import 'package:voltpay/core/theme/theme_controller.dart';
 import 'package:voltpay/core/theme/theme_provider.dart';
+import 'package:voltpay/features/rates/domain/api_config.dart';
 import 'package:voltpay/firebase_options.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // debugPrint('API_BASE = ${Env.apiBase}');
-  // final ApiConfig cfg = ApiConfig(Env.apiBase);
-  // debugPrint('ApiConfig.baseUrl = ${cfg.baseUrl}');
-  // debugPrint('ApiConfig.health = ${cfg.healthUri()}');
+  debugPrint('API_BASE = ${Env.apiBase}');
+  final ApiConfig cfg = ApiConfig(Env.apiBase);
+  final AuthApiConfig authCfg = AuthApiConfig(baseUrl: Env.authBase);
+  final AuthApiConfig funcCfg = AuthApiConfig(baseUrl: Env.funcBase);
+  debugPrint('AuthApiConfig.function = ${funcCfg.apiBase}');
+  debugPrint('AuthApiConfig.baseUrl = ${authCfg.apiBase}');
+  debugPrint('ApiConfig.baseUrl = ${cfg.baseUrl}');
+  debugPrint('ApiConfig.health = ${cfg.healthUri()}');
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   // Robust check for development mode
@@ -47,14 +54,6 @@ Future<void> main() async {
     );
     await FirebaseAuth.instance.setSettings(
       appVerificationDisabledForTesting: true,
-    );
-  } else {
-    // ✅ Use PRODUCTION provider on real device
-    await FirebaseAppCheck.instance.activate(
-      providerAndroid: const AndroidPlayIntegrityProvider(),
-    );
-    await FirebaseAuth.instance.setSettings(
-      appVerificationDisabledForTesting: false,
     );
   }
 

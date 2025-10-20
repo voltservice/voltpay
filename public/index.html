@@ -1,94 +1,178 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="theme-color" content="#26A96C" />
-  <title>VoltPay</title>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#26A96C" />
+    <title>VoltPay</title>
 
-  <!-- Favicons -->
-  <link rel="icon" href="/assets/favicon.ico" sizes="any" />
-  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
-  <link rel="apple-touch-icon" href="/assets/voltpay.png" />
+    <!-- Favicons -->
+    <link rel="icon" href="/assets/favicon.ico" sizes="any" />
+    <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/assets/voltpay.png" />
 
-  <!-- Styles -->
-  <!-- If this file lives in /public/styles.css, reference it at /styles.css in Firebase Hosting -->
-  <link rel="stylesheet" href="/styles.css" />
-</head>
-<body>
-  <div class="container">
-    <header class="brand-header">
-      <a class="brand" href="/">
-        <img src="/assets/voltpay.png" alt="" class="logo" width="36" height="36" />
-        <span class="wordmark">VoltPay</span>
-        <span class="sr-only">Home</span>
-      </a>
-
-      <nav class="topnav" aria-label="Primary">
-        <a href="#features">Features</a>
-        <a href="#security">Security</a>
-        <a href="#get-started">Get started</a>
-      </nav>
-    </header>
-
-    <header class="page-head">
-      <h1>Fast, secure, borderless payments.</h1>
-      <p class="header-sub">
-        Send and receive money with confidence. Built with strong encryption, smart verifications, and a delightful UI.
-      </p>
-      <div class="meta" style="margin-top: .75rem;">
-        <span class="pill">Material 3 inspired</span>
-        <span class="pill">Firebase-ready</span>
-        <span class="pill">App Links enabled</span>
-      </div>
-    </header>
-
-    <main>
-      <section id="features" class="section">
-        <h2>Why VoltPay</h2>
-        <div class="grid grid-2">
-          <div>
-            <h3>Speed</h3>
-            <p>Optimized rails for quick transfers and instant confirmations.</p>
-          </div>
-          <div>
-            <h3>Security</h3>
-            <p>Multi-layer verification, App Links, and strong device checks.</p>
-          </div>
-          <div>
-            <h3>Clarity</h3>
-            <p>Clean, modern UI with clear fees and live status updates.</p>
-          </div>
-          <div>
-            <h3>Coverage</h3>
-            <p>Global currencies, local payouts, and smart routing.</p>
-          </div>
+    <!-- Styles -->
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <!-- Navbar -->
+      <nav class="nav">
+        <input type="checkbox" id="nav-check" aria-label="Toggle navigation" />
+        <div class="nav-header">
+          <a class="brand" href="/">
+            <img
+              src="/assets/voltpay.png"
+              alt="VoltPay logo"
+              class="logo"
+              width="48"
+              height="48"
+            />
+            <span class="wordmark">VoltPay</span>
+            <span class="sr-only">Home</span>
+          </a>
         </div>
-      </section>
+        <div class="nav-btn">
+          <label
+            for="nav-check"
+            aria-label="Open menu"
+            role="button"
+            tabindex="0"
+          >
+            <span></span><span></span><span></span>
+          </label>
+        </div>
+        <div class="nav-links">
+          <a href="#features">Features</a>
+          <a href="#download">App</a>
+        </div>
+      </nav>
 
-      <section id="security" class="section">
-        <h2>Built-in trust</h2>
-        <p>Vault-grade encryption, per-device sign-in links, and safe fallbacks for web and mobile.</p>
-        <div class="notice info">Tip: if an email link opens the web, we’ll still complete sign-in securely.</div>
-      </section>
+      <!-- Header -->
+      <header class="page-head">
+        <h1>Fast, secure, borderless payments.</h1>
+        <p class="header-sub">
+          Send and receive money with confidence. Built with strong encryption,
+          smart verifications, and a delightful UI.
+        </p>
+        <div class="meta" style="margin-top: 0.75rem">
+          <span class="pill">Material 3 inspired</span>
+          <span class="pill">Firebase-ready</span>
+          <span class="pill">App Links enabled</span>
+        </div>
+      </header>
 
-      <section id="get-started" class="section">
-        <h2>Get started</h2>
-        <p>Ready to try VoltPay?</p>
-        <a class="btn btn-primary" href="/optin/optin.html">Install Android demo</a>
-        <a class="btn btn-ghost" href="/verify/verification.html">Test sign-in flow</a>
-      </section>
-    </main>
+      <!-- Main Content -->
+      <main>
+        <!-- Features -->
+        <section id="features" class="card">
+          <h2>Why VoltPay</h2>
+          <div class="grid grid-2 card section">
+            <div>
+              <h3>Speed</h3>
+              <p>
+                Optimized rails for quick transfers and instant confirmations.
+              </p>
+            </div>
+            <div>
+              <h3>Security</h3>
+              <p>
+                Multi-layer verification, App Links, and strong device checks.
+              </p>
+            </div>
+            <div>
+              <h3>Clarity</h3>
+              <p>Clean, modern UI with clear fees and live status updates.</p>
+            </div>
+            <div>
+              <h3>Coverage</h3>
+              <p>Global currencies, local payouts, and smart routing.</p>
+            </div>
+          </div>
+        </section>
 
-    <footer class="page-foot">
-      <span>© <span id="y"></span> VoltPay</span>
-      <span><a href="#privacy">Privacy</a> · <a href="#terms">Terms</a></span>
-    </footer>
-  </div>
+        <!-- Security -->
+        <section id="security" class="card">
+          <div class="grid grid-2 card section">
+            <div>
+              <h3>Device Verification</h3>
+              <p>Each device is verified before processing payments.</p>
+            </div>
+            <div>
+              <h3>Data Encryption</h3>
+              <p>All data is encrypted in transit and at rest.</p>
+            </div>
+          </div>
+        </section>
 
-  <script>
-    // tiny year updater
-    document.getElementById('y').textContent = new Date().getFullYear();
-  </script>
-</body>
+        <!-- Trust -->
+        <section id="trust" class="card">
+          <div class="grid grid-2 card section">
+            <div>
+              <h2>Built-in trust</h2>
+              <p>
+                Secure sign-in and payment links that open the app directly.
+              </p>
+            </div>
+            <div>
+              <h2>Strong encryption</h2>
+              <p>
+                Vault-grade encryption, per-device sign-in links, and safe
+                fallbacks for web and mobile.
+              </p>
+              <div class="notice info">
+                Tip: if an email link opens the web, we’ll still complete
+                sign-in securely.
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Get Started -->
+        <section id="get-started" class="card">
+          <h2>Get started</h2>
+          <p>Ready to try VoltPay?</p>
+          <div class="card">
+            <p class="note">
+              <strong>Note:</strong> This is a demo app. No real money is
+              transferred.
+            </p>
+            <div class="actions">
+              <a class="btn btn-primary" href="/optin/optin.html"
+                >Install Android demo</a
+              >
+              <a class="btn btn-ghost" href="/verify/verification.html"
+                >Test sign-in flow</a
+              >
+            </div>
+          </div>
+        </section>
+        <!-- Contact -->
+        <section id="contact" class="card">
+          <h2>Contact</h2>
+          <p>
+            Have questions or feedback? We'd love to hear from you! Reach out to
+            us at
+            <a href="mailto:developer@metalbrain.net"
+              >developer@metalbrain.net</a
+            >.
+          </p>
+        </section>
+      </main>
+
+      <!-- Footer -->
+      <footer class="page-foot">
+        <span>© <span id="y"></span> VoltPay</span>
+        <span>
+          <a href="#privacy">Privacy</a> ·
+          <a href="#terms">Terms</a>
+        </span>
+      </footer>
+    </div>
+
+    <script>
+      // tiny year updater
+      document.getElementById("y").textContent = new Date().getFullYear();
+    </script>
+  </body>
 </html>

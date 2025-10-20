@@ -19,7 +19,7 @@ void main() {
     test('returns body when statusCode == 200', () async {
       // Arrange
       final Uri uri = Uri.parse(
-        '${const String.fromEnvironment('GO_API_BASE', defaultValue: 'http://10.0.2.2:9099')}/api/message',
+        '${const String.fromEnvironment('GO_API_BASE', defaultValue: 'http://192.168.56.1:8080')}/api/message',
       );
 
       when(
@@ -37,7 +37,7 @@ void main() {
 
     test('throws when statusCode != 200', () async {
       final Uri uri = Uri.parse(
-        '${const String.fromEnvironment('GO_API_BASE', defaultValue: 'http://10.0.2.2:9099')}/api/message',
+        '${const String.fromEnvironment('GO_API_BASE', defaultValue: 'http://192.168.56.1:8080')}/api/message',
       );
 
       when(

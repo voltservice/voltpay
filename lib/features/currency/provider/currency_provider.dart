@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod/riverpod.dart';
 import 'package:voltpay/features/currency/domain/currency.dart';
 
 final FutureProvider<List<Currency>>
@@ -30,5 +31,29 @@ final Provider<List<Currency>> popularCurrenciesProvider =
         data: (List<Currency> all) =>
             all.where((Currency c) => c.popular).toList(),
         orElse: () => const <Currency>[],
+      );
+    });
+
+/// Build an index for O(1) lookups by code.
+final Provider<Map<String, Currency>> currencyIndexProvider =
+    Provider<Map<String, Currency>>((Ref ref) {
+      final AsyncValue<List<Currency>> async = ref.watch(currenciesProvider);
+      return async.maybeWhen(
+        data: (List<Currency> all) => <String, Currency>{
+          for (final Currency c in all) c.code: c,
+        },
+        orElse: () => const <String, Currency>{},
+      );
+    });
+
+/// Build an index for O(1) lookups by name
+final Provider<Map<String, Currency>> currencyNameIndexProvider =
+    Provider<Map<String, Currency>>((Ref ref) {
+      final AsyncValue<List<Currency>> async = ref.watch(currenciesProvider);
+      return async.maybeWhen(
+        data: (List<Currency> all) => <String, Currency>{
+          for (final Currency c in all) c.name.toLowerCase(): c,
+        },
+        orElse: () => const <String, Currency>{},
       );
     });

@@ -23,6 +23,31 @@ abstract class PaymentMethodOption with _$PaymentMethodOption {
     available: true,
   );
 
+  factory PaymentMethodOption.debitCard() => const PaymentMethodOption(
+    type: PaymentMethodType.debitCard,
+    title: 'Debit Card',
+    subtitle: '12.35 USD fee, should arrive by Thursday',
+    fixedFee: 12.35,
+    available: true,
+  );
+
+  factory PaymentMethodOption.creditCard() => const PaymentMethodOption(
+    type: PaymentMethodType.creditCard,
+    title: 'Credit Card',
+    subtitle: '61.65 USD fee, should arrive by Thursday',
+    fixedFee: 61.65,
+    available: true,
+  );
+
+  factory PaymentMethodOption.accountTransfer() => const PaymentMethodOption(
+    type: PaymentMethodType.accountTransfer,
+    title: 'Account transfer',
+    subtitle:
+        'Sorry, using a multi currency account isn’t available in your country.',
+    fixedFee: 0,
+    available: false,
+  );
+
   factory PaymentMethodOption.fromJson(Map<String, dynamic> json) =>
       _$PaymentMethodOptionFromJson(json);
 }

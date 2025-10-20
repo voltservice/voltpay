@@ -31,32 +31,3 @@ authUserProvider = StreamProvider<AuthUserModel?>((Ref ref) {
     },
   );
 });
-// lib/core/auth/provider/auth_user_provider.dart
-// import 'package:firebase_auth/firebase_auth.dart' as fb;
-// import 'package:flutter_riverpod/flutter_riverpod.dart';
-// import 'package:voltpay/core/auth/model/auth_user_model.dart';
-//
-// /// App-level authenticated user as `AuthUserModel?`.
-// /// Uses `userChanges()` so it updates on sign-in/out & profile/token refresh.
-// final StreamProvider<AuthUserModel?> authUserProvider =
-//     StreamProvider<AuthUserModel?>((Ref ref) {
-//       return fb.FirebaseAuth.instance.userChanges().map((fb.User? u) {
-//         if (u == null) {
-//           return null;
-//         }
-//         return AuthUserModel(
-//           uid: u.uid,
-//           email: u.email,
-//           displayName: u.displayName,
-//           phoneNumber: u.phoneNumber,
-//           photoURL: u.photoURL,
-//           isAnonymous: u.isAnonymous,
-//           tenantId: u.tenantId,
-//           providerIds: u.providerData
-//               .map((fb.UserInfo p) => p.providerId)
-//               .toList(),
-//           emailVerified: u.emailVerified,
-//           status: u.emailVerified ? UserStatus.verified : UserStatus.unverified,
-//         );
-//       });
-//     });

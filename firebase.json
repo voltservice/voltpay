@@ -6,8 +6,8 @@
     "auth": {
       "port": 9099
     },
-    "pubsub":    { 
-      "port": 8085 
+    "pubsub": {
+      "port": 8085
     },
     "functions": {
       "port": 5001
@@ -70,14 +70,8 @@
   "hosting": {
     "public": "public",
     "cleanUrls": true,
-    "rewrites": [
-      { "source": "!/**__/**", "destination": "/index.html" }
-    ],
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
-    ],
+    "rewrites": [{ "source": "**", "destination": "/index.html" }],
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "headers": [
       {
         "source": "/.well-known/assetlinks.json",
@@ -86,7 +80,11 @@
           { "key": "Cache-Control", "value": "public, max-age=300" }
         ]
       },
-       {
+      {
+        "source": "/finishSignIn/**",
+        "headers": [{ "key": "Cache-Control", "value": "no-store" }]
+      },
+      {
         "source": "/verify/**",
         "headers": [{ "key": "Cache-Control", "value": "no-cache" }]
       },
@@ -118,10 +116,33 @@
             "value": "geolocation=(), microphone=(), camera=()"
           }
         ]
+      },
+      {
+        "source": "/service-worker.js",
+        "headers": [
+          { "key": "Cache-Control", "value": "no-cache" },
+          { "key": "X-Content-Type-Options", "value": "nosniff" },
+          { "key": "X-Frame-Options", "value": "DENY" },
+          { "key": "X-XSS-Protection", "value": "1; mode=block" },
+          {
+            "key": "Strict-Transport-Security",
+            "value": "max-age=31536000; includeSubDomains"
+          },
+          {
+            "key": "Permissions-Policy",
+            "value": "geolocation=(), microphone=(), camera=()"
+          }
+        ]
       }
     ]
   },
   "storage": {
     "rules": "storage.rules"
+  },
+  "hostingChannels": {
+    "preview": {
+      "expires": "7d"
+    },
+    "emulators": { "hosting": { "port": 5000 } }
   }
 }

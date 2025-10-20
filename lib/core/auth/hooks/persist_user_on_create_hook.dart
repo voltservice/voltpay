@@ -24,4 +24,28 @@ class PersistUserOnCreateHook extends AuthHook {
     await _profiles.upsertNewUser(model, providerId: provider);
     return HookDecision.allow;
   }
+
+  @override
+  Future<HookDecision> beforeSignIn(HookContext ctx) async {
+    // If you ever want to gate by domain/provider for non-federated here,
+    // read ctx.email / ctx.providerId and return HookDecision.deny.
+    return HookDecision.allow;
+  }
+
+  /// Touch 'lastSignedIn' after every successful sign-in.
+  // @override
+  // Future<void> afterSignIn(fb.UserCredential cred) async {
+  //   final String? uid = cred.user?.uid;
+  //   if (uid == null || uid.isEmpty) {
+  //     return;
+  //   }
+  //   await _profiles.touchLastSignedIn(uid);
+  // }
+  @override
+  Future<void> afterSignIn(fb.UserCredential cred) async {
+    final String? uid = cred.user?.uid;
+    if (uid == null || uid.isEmpty) {
+      return;
+    }
+  }
 }

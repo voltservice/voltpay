@@ -13,6 +13,9 @@ func main() {
 	if os.Getenv("FUNCTION_TARGET") == "" {
 		_ = os.Setenv("FUNCTION_TARGET", "api")
 	}
+	if os.Getenv("BASE_URL") == "" {
+		_ = os.Setenv("BASE_URL", "http://192.168.56.1:8080")
+	}
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:voltpay/core/auth/provider/auth_provider.dart';
+import 'package:voltpay/core/router/app_routes.dart';
 // Re-use your existing pieces from Rates
 import 'package:voltpay/features/currency/domain/currency.dart';
 import 'package:voltpay/features/currency/presentation/currency_picker.dart';
@@ -117,8 +118,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 spacing: 8,
                 runSpacing: 8,
                 children: <Widget>[
-                  PillAction(label: 'Send', onTap: () {}),
-                  PillAction(label: 'Add money', onTap: () {}),
+                  PillAction(
+                    label: 'Send',
+                    onTap: () => context.goNamed(AppRoute.addMoney.name),
+                  ),
+                  PillAction(
+                    label: 'Add money',
+                    onTap: () => context.goNamed(AppRoute.topup.name),
+                  ),
                   PillAction(
                     label: 'Request',
                     trailing: const Icon(Icons.chevron_right, size: 18),

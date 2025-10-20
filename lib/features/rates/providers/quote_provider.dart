@@ -107,10 +107,3 @@ class QuoteNotifier extends _$QuoteNotifier {
     }
   }
 }
-
-// String _methodToString(PaymentMethodType t) => switch (t) {
-//       PaymentMethodType.wire => 'wire',
-//       PaymentMethodType.debitCard => 'debitCard',
-//       PaymentMethodType.creditCard => 'creditCard',
-//       PaymentMethodType.accountTransfer => 'accountTransfer',
-//     };

@@ -1,5 +1,6 @@
 enum AppRoute {
   splash,
+  finishSignIn,
   go,
   home,
   cards,
@@ -9,6 +10,10 @@ enum AppRoute {
   onboarding,
   remit,
   send,
+  addMoney,
+  recipientPicker,
+  topup,
+  paymentMethod,
   boost,
   rate,
   emailEntry,

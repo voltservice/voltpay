@@ -120,10 +120,7 @@ class AuthService {
   }
 
   String? _extractEmailIfAny(ISignInProvider p, fb.AuthCredential? c) {
-    if (p.providerId == fb.EmailAuthProvider.PROVIDER_ID) {
-      // Email is known at UI layer; pass via a custom EmailPasswordProvider if needed.
-      // Here we can’t extract it from credential directly.
-    }
+    if (p.providerId == fb.EmailAuthProvider.PROVIDER_ID) {}
     return null;
   }
 

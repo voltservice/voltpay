@@ -1,73 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Verify your sign-in · VoltPay</title>
-  <link rel="stylesheet" href="/styles.css" />
-</head>
-<body>
-  <div class="container">
-    <header class="brand-header">
-      <a class="brand" href="/">
-        <img src="/assets/voltpay.png" alt="" class="logo" width="36" height="36" />
-        <span class="wordmark">VoltPay</span>
-      </a>
-    </header>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link rel="icon" href="/assets/favicon.ico" sizes="any" />
+    <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/assets/voltpay.png" />
+    <title>Verify your sign-in · VoltPay</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header class="brand-header">
+        <a class="brand" href="/">
+          <img
+            src="/assets/voltpay.png"
+            alt=""
+            class="logo"
+            width="36"
+            height="36"
+          />
+          <span class="wordmark">VoltPay</span>
+        </a>
+      </header>
 
-    <main>
-      <section class="section">
-        <h1>Check your device</h1>
-        <p class="muted">
-          If you opened this from your Android device, the VoltPay app should launch and sign you in automatically.
-          If not, tap the button below.
-        </p>
-        <div class="meta" style="margin-top: .75rem;">
-          <a class="btn btn-primary" id="open-app" href="intent://voltpay.metalbrain.net/finishSignIn#Intent;scheme=https;package=com.metal.voltpay;end">Open VoltPay</a>
-          <button class="btn" onclick="location.href='/'">Back to home</button>
-        </div>
-      </section>
+      <main>
+        <section class="card">
+          <h1>Check your device</h1>
+          <p class="muted">
+            If you opened this from your Android device, the VoltPay app should
+            launch and sign you in automatically. If not, tap the button below.
+          </p>
+          <div class="meta" style="margin-top: 0.75rem">
+            <a
+              class="btn btn-primary"
+              id="open-app"
+              href="intent://voltpay.metalbrain.net/finishSignIn#Intent;scheme=https;package=com.metal.voltpay;end"
+              >Open VoltPay</a
+            >
+            <button class="btn" onclick="location.href='/'">
+              Back to home
+            </button>
+          </div>
+        </section>
 
-      <section class="notice info">
-        Having trouble? Copy the full link from your email and open it on your Android device with VoltPay installed.
-      </section>
-    </main>
+        <section class="notice info">
+          Having trouble? Copy the full link from your email and open it on your
+          Android device with VoltPay installed.
+        </section>
+      </main>
 
-    <footer class="page-foot">
-      <span>© <span id="y"></span> VoltPay</span>
-    </footer>
-  </div>
+      <footer class="page-foot">
+        <span>© <span id="y"></span> VoltPay</span>
+      </footer>
+    </div>
 
-  <script>
-  (function () {
-    function ready(fn){ (document.readyState !== 'loading') ? fn() : document.addEventListener('DOMContentLoaded', fn); }
-    ready(function(){
-      const fullLink = window.location.href;
+    <script>
+      (function () {
+        function ready(fn) {
+          document.readyState !== "loading"
+            ? fn()
+            : document.addEventListener("DOMContentLoaded", fn);
+        }
+        ready(function () {
+          const fullLink = window.location.href;
 
-      // Clicking this should re-open the same HTTPS link.
-      // If App Links are verified, Android will take the user straight into the app.
-      const openBtn = document.getElementById('openBtn');
-      const fallback = document.getElementById('fallback');
-      const rawAnchor = document.getElementById('raw-anchor');
+          // Clicking this should re-open the same HTTPS link.
+          // If App Links are verified, Android will take the user straight into the app.
+          const openBtn = document.getElementById("openBtn");
+          const fallback = document.getElementById("fallback");
+          const rawAnchor = document.getElementById("raw-anchor");
 
-      rawAnchor.href = fullLink;
+          rawAnchor.href = fullLink;
 
-      function tryOpen(){
-        // Re-navigate to the same link; verified App Link will deep-link to app.
-        window.location.href = fullLink;
+          function tryOpen() {
+            // Re-navigate to the same link; verified App Link will deep-link to app.
+            window.location.href = fullLink;
 
-        // Show fallback after ~1.5s if app didn't open
-        setTimeout(function(){
-          fallback.classList.remove('hidden');
-        }, 1500);
-      }
+            // Show fallback after ~1.5s if app didn't open
+            setTimeout(function () {
+              fallback.classList.remove("hidden");
+            }, 1500);
+          }
 
-      openBtn?.addEventListener('click', tryOpen);
-    });
-  })();
-</script>
-  <script>
-    document.getElementById('y').textContent = new Date().getFullYear();
-  </script>
-</body>
+          openBtn?.addEventListener("click", tryOpen);
+        });
+      })();
+    </script>
+    <script>
+      document.getElementById("y").textContent = new Date().getFullYear();
+    </script>
+  </body>
 </html>

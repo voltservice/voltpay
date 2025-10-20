@@ -44,3 +44,5 @@ public/
 .fusebox/
 
 .env.micro-harbor-469912-u6
+
+.secret.local

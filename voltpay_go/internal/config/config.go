@@ -3,33 +3,71 @@ package config
 import (
 	"log"
 	"os"
-	"time"
+	"regexp"
+	"strings"
 )
 
 type Config struct {
-	Port               string
-	ExchangeRateAPIKey string
-	AllowedOriginsCSV  string
-	HTTPClientTimeout  time.Duration
+	AllowedEmailDomains map[string]struct{}
+	BlockedEmails       map[string]struct{}
+	AllowedProviders    map[string]struct{}
+	AllowedTenants      map[string]struct{}
+	AuthGate            bool
+	BaseURL             string
+	DisposablePatterns  []*regexp.Regexp
+
+	ProjectID string
 }
 
-func Load() Config {
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "9099"
+func mustEnvCSVSet(name string, lower bool) map[string]struct{} {
+	raw := strings.TrimSpace(os.Getenv(name))
+	out := make(map[string]struct{})
+	if raw == "" {
+		return out
 	}
-	key := os.Getenv("EXCHANGE_RATE_API_KEY") // required in prod
-	if key == "" {
-		log.Println("[warn] EXCHANGE_RATE_API_KEY is empty (ok for local dev if you stub responses)")
+	for _, p := range strings.Split(raw, ",") {
+		s := strings.TrimSpace(p)
+		if s == "" {
+			continue
+		}
+		if lower {
+			s = strings.ToLower(s)
+		}
+		out[s] = struct{}{}
 	}
-	allowed := os.Getenv("ALLOWED_ORIGINS")
-	if allowed == "" {
-		allowed = "https://metalbrain.net,https://www.metalbrain.net,http://localhost:5001,http://localhost:3000"
+	return out
+}
+
+func compileRegexList(rawCSV string) []*regexp.Regexp {
+	var out []*regexp.Regexp
+	raw := strings.TrimSpace(rawCSV)
+	if raw == "" {
+		return out
 	}
-	return Config{
-		Port:               port,
-		ExchangeRateAPIKey: key,
-		AllowedOriginsCSV:  allowed,
-		HTTPClientTimeout:  6 * time.Second,
+	for _, p := range strings.Split(raw, ",") {
+		ps := strings.TrimSpace(p)
+		if ps == "" {
+			continue
+		}
+		rx, err := regexp.Compile("(?i)" + ps)
+		if err != nil {
+			log.Printf("[authgate] invalid regex skipped: %q (%v)", ps, err)
+			continue
+		}
+		out = append(out, rx)
+	}
+	return out
+}
+
+func Load() *Config {
+	return &Config{
+		AllowedEmailDomains: mustEnvCSVSet("ALLOWED_EMAIL_DOMAINS", true),
+		BlockedEmails:       mustEnvCSVSet("BLOCKED_EMAILS", true),
+		AllowedProviders:    mustEnvCSVSet("ALLOWED_PROVIDERS", true),
+		AllowedTenants:      mustEnvCSVSet("ALLOWED_TENANTS", false),
+		AuthGate:            true,
+		DisposablePatterns:  compileRegexList(os.Getenv("DISPOSABLE_PATTERNS")),
+		BaseURL:             os.Getenv("BASE_URL"),
+		ProjectID:           os.Getenv("GCP_PROJECT"),
 	}
 }

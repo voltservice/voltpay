@@ -3,11 +3,13 @@ package handlers
 import (
 	"context"
 	"encoding/json"
-	"errors"
+	_ "errors"
 	"fmt"
+	_ "io"
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type QuoteResponse struct {
@@ -35,6 +37,7 @@ type exchangerateAPIResp struct {
 type QuoteDeps struct {
 	HTTP   *http.Client
 	APIKey string
+	Cache  *RateCache
 }
 
 func (d QuoteDeps) Handle(w http.ResponseWriter, r *http.Request) {
@@ -58,14 +61,24 @@ func (d QuoteDeps) Handle(w http.ResponseWriter, r *http.Request) {
 		method = "wire"
 	}
 
-	if d.APIKey == "" {
+	if strings.TrimSpace(d.APIKey) == "" {
 		http.Error(w, `{"error":"missing_api_key"}`, http.StatusInternalServerError)
 		return
 	}
 
-	rate, err := d.fetchRate(r.Context(), source, target)
+	// NEW: (rate, src, err)
+	rate, src, err := d.fetchRate(r.Context(), source, target)
 	if err != nil {
-		http.Error(w, fmt.Sprintf(`{"error":"provider","detail":%q}`, err.Error()), http.StatusBadGateway)
+		fmt.Printf("[quotes] fetchRate error: %v\n", err)
+
+		msg := err.Error()
+		code := http.StatusBadGateway
+		if strings.Contains(msg, "provider status 401") ||
+			strings.Contains(msg, "provider status 403") ||
+			strings.Contains(msg, "provider status 404") {
+			code = http.StatusBadRequest
+		}
+		http.Error(w, fmt.Sprintf(`{"error":"provider","detail":%q}`, msg), code)
 		return
 	}
 	if rate <= 0 {
@@ -94,32 +107,37 @@ func (d QuoteDeps) Handle(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Cache-Control", "private, max-age=30")
+	if src != "" {
+		w.Header().Set("X-Rate-Source", src) // "cache" or "upstream"
+	}
 	_ = json.NewEncoder(w).Encode(resp)
 }
 
-func (d QuoteDeps) fetchRate(ctx context.Context, source, target string) (float64, error) {
-	url := fmt.Sprintf("https://v6.exchangerate-api.com/v6/%s/pair/%s/%s", d.APIKey, source, target)
-	req, _ := http.NewRequest("GET", url, nil)
-	req = req.WithContext(ctx)
-
-	resp, err := d.HTTP.Do(req)
+func (d QuoteDeps) fetchRate(ctx context.Context, source, target string) (float64, string, error) {
+	if d.Cache != nil {
+		if r, ok := d.Cache.Get(ctx, source, target); ok {
+			return r, "cache", nil
+		}
+	}
+	// client with 4s timeout is good if Cloud Run is 15s
+	if d.HTTP == nil {
+		d.HTTP = &http.Client{Timeout: 4 * time.Second}
+	}
+	// (optional) light retry on timeout/5xx
+	rate, err := d.callUpstreamWithRetry(ctx, source, target)
 	if err != nil {
-		return 0, err
+		// fallback: try cache again (maybe a concurrent request populated it)
+		if d.Cache != nil {
+			if r, ok := d.Cache.Get(ctx, source, target); ok {
+				return r, "cache", nil
+			}
+		}
+		return 0, "", err
 	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return 0, fmt.Errorf("status %d", resp.StatusCode)
+	if d.Cache != nil {
+		d.Cache.Set(ctx, source, target, rate)
 	}
-
-	var body exchangerateAPIResp
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
-		return 0, err
-	}
-	if body.Result != "success" || body.ConversionRate <= 0 {
-		return 0, errors.New("bad_provider_payload")
-	}
-	return body.ConversionRate, nil
+	return rate, "upstream", nil
 }
 
 func feeForMethod(m string) float64 {

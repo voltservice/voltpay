@@ -1,75 +1,208 @@
-version: " 2.5.0" # use your installed golangci-lint version
-
+# .golangci.yml
 run:
   timeout: 3m
   tests: true
-  issues-exit-code: 1
   allow-parallel-runners: true
+  issues-exit-code: 1
 
-formatters:
-  settings:
-    gci:
-      # Section configuration to compare against.
-      # Section names are case-insensitive and may contain parameters in ().
-      # The default order of sections is `standard > default > custom > blank > dot > alias > localmodule`.
-      # If `custom-order` is `true`, it follows the order of `sections` option.
-      # Default: ["standard", "default"]
-      sections:
-        - standard # Standard section: captures all standard packages.
-        - default # Default section: contains all imports that could not be matched to another section type.
-        - prefix(github.com/org/project) # Custom section: groups all imports with the specified Prefix.
-        - blank # Blank section: contains all blank imports. This section is not present unless explicitly enabled.
-        - dot # Dot section: contains all dot imports. This section is not present unless explicitly enabled.
-        - alias # Alias section: contains all alias imports. This section is not present unless explicitly enabled.
-        - localmodule # Local module section: contains all local packages. This section is not present unless explicitly enabled.
-      # Checks that no inline comments are present.
-      # Default: false
-      no-inline-comments: true
-      # Checks that no prefix comments (comment lines above an import) are present.
-      # Default: false
-      no-prefix-comments: true
-      # Enable custom order of sections.
-      # If `true`, make the section order the same as the order of `sections`.
-      # Default: false
-      custom-order: true
-      # Drops lexical ordering for custom sections.
-      # Default: false
-      no-lex-order: true
+output:
+  formats:
+    - format: colored-line-number
+
+issues:
+  # Show everything; don't collapse duplicates
+  max-issues-per-linter: 0
+  max-same-issues: 0
+  exclude-use-default: false
 
 linters:
   enable:
-    - govet
-    - staticcheck
-    - errcheck
-    - gosimple
-    - ineffassign
-    - typecheck
-    - unused
-    - misspell
-    - gosec
-    - gocritic
-    - revive
-    - stylecheck
-    - whitespace
-    - goconst
-    - gocyclo
+    # --- core + widely available linters ---
+    - asasalint
+    - asciicheck
+    - bidichk
+    - bodyclose
+    - canonicalheader
+    - containedctx
+    - contextcheck
+    - copyloopvar
+    - cyclop
+    - decorder
+    - depguard
+    - dogsled
     - dupl
-    - exportloopref
-    - prealloc
-    - unparam
-    - nakedret
+    - dupword
+    - durationcheck
+    - err113
+    - errchkjson
     - errname
     - errorlint
+    - exhaustive
+    - exhaustruct
+    - exptostd
+    - forbidigo
     - forcetypeassert
-    - gomoddirectives
-    - lll
-    - nolintlint
-    - depguard
-    - bodyclose
+    - funlen
+    - gocognit
+    - goconst
+    - gocritic
+    - gocyclo
     - godot
-    - lintsas # if available in your version; otherwise remove
-    - asciicheck
-    - containedctx
-    - copyloopvar
-    - tenv
+    - gomoddirectives
+    - gci              # import grouping/format (configured below)
+    - gosec
+    - importas
+    - inamedparam
+    - intrange
+    - ireturn
+    - lll
+    - makezero
+    - misspell
+    - mnd
+    - nakedret
+    - nestif
+    - nilerr
+    - nilnil
+    - nlreturn
+    - noctx
+    - nolintlint
+    - nonamedreturns
+    - nosprintfhostport
+    - paralleltest
+    - prealloc
+    - predeclared
+    - revive
+    - rowserrcheck
+    - sqlclosecheck
+    - tagalign
+    - tagliatelle
+    - testableexamples
+    - thelper
+    - tparallel
+    - unconvert
+    - unparam
+    - usestdlibvars
+    - varnamelen
+    - wastedassign
+    - whitespace
+    - wrapcheck
 
+  # Helpful if you want to start strict and dial back later:
+  disable-all: false
+  fast: false
+
+linters-settings:
+  # ---- gci (import organizer) ----
+  gci:
+    # Local module path(s) — adjust to your real module path
+    local-prefixes: voltpay_go
+    # Custom section order (matches what you described)
+    sections:
+      - standard
+      - default
+      - prefix(voltpay_go)
+      - blank
+      - dot
+      - alias
+      - localmodule
+    custom-order: true
+    no-inline-comments: true
+    no-prefix-comments: true
+    no-lex-order: true
+
+  # Keep lines readable but not too strict
+  lll:
+    line-length: 140
+    tab-width: 1
+
+  # Complexity budgets
+  gocyclo:
+    min-complexity: 15
+  cyclop:
+    max-complexity: 15
+    package-average: 0
+
+  gocognit:
+    min-complexity: 20
+
+  funlen:
+    lines: 120
+    statements: 80
+
+  # Magic numbers: warn on suspicious ones, ignore common cases
+  mnd:
+    ignored-numbers: [0,1,2,10,60,100,1024]
+    ignored-functions: [strconv.Atoi, strconv.ParseInt, strconv.ParseUint, strconv.ParseFloat, time.Sleep]
+
+  # misspell: en-GB or en-US; default en-US
+  misspell:
+    locale: US
+
+  # error wrapping guidance
+  wrapcheck:
+    ignoreSigs:
+      - errors.Join(error, ...)
+      - errors.Wrap(...) # if you use pkg/errors; otherwise remove
+
+  # depguard: prevent accidental imports (example only)
+  depguard:
+    rules:
+      main:
+        list-mode: allowlist
+        files:
+          - "**/*.go"
+        allow:
+          - "^context$"
+          - "^errors$"
+          - "^fmt$"
+          - "^net/http$"
+          - "^time$"
+          - "^crypto/"
+          - "^encoding/"
+          - "^io$"
+          - "^strings$"
+          - "^github.com/go-chi/chi/v5"
+          - "^github.com/GoogleCloudPlatform/functions-framework-go"
+          - "^github.com/golang-jwt/jwt/v5"
+          - "^github.com/lestrrat-go/jwx/v2/jwt"
+          - "^golang.org/x/"
+          - "^voltpay_go/"    # your local pkgs
+        # Set to "denylist" and move approved packages to "deny" to invert policy.
+
+  # nolint comments must have a reason
+  nolintlint:
+    require-explanation: true
+    require-specific: true
+
+  # revive: a reasonable baseline rule set
+  revive:
+    rules:
+      - name: exported
+      - name: var-naming
+      - name: package-comments
+      - name: range-val-in-closure
+      - name: unreachable-code
+      - name: unnecessary-stmt
+      - name: unexported-return
+      - name: error-naming
+      - name: errorf
+      - name: receiver-naming
+      - name: time-naming
+
+  # var name length (be pragmatic)
+  varnamelen:
+    min-name-length: 2
+    max-name-length: 32
+    check-receiver: false
+    check-return: false
+    check-parameter: false
+
+  # gosec: tune noisy rules if needed
+  gosec:
+    excludes:
+      - G115 # integer overflow false-positives on strconv Atoi
+
+# Optional: fine-grained exclude examples (start empty)
+# exclude-rules:
+#   - linters: [lll]
+#     source: "^//go:generate"

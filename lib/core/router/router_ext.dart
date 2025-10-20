@@ -5,6 +5,8 @@ extension AppRouteExtension on AppRoute {
     switch (this) {
       case AppRoute.splash:
         return '/splash';
+      case AppRoute.finishSignIn:
+        return '/finishSignIn';
       case AppRoute.home:
         return '/home';
       case AppRoute.cards:
@@ -23,6 +25,14 @@ extension AppRouteExtension on AppRoute {
         return '/remit';
       case AppRoute.send:
         return '/send';
+      case AppRoute.addMoney:
+        return '/add-money';
+      case AppRoute.recipientPicker:
+        return '/recipient-picker';
+      case AppRoute.topup:
+        return '/topup';
+      case AppRoute.paymentMethod:
+        return '/paymentMethod';
       case AppRoute.boost:
         return '/boost';
       case AppRoute.rate:
@@ -30,7 +40,7 @@ extension AppRouteExtension on AppRoute {
       case AppRoute.emailEntry:
         return '/email-entry';
       case AppRoute.login:
-        return '/login';
+        return '/';
       case AppRoute.emailVerification:
         return '/email-verification';
       case AppRoute.service:

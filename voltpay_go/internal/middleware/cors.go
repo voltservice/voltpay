@@ -1,4 +1,4 @@
-// internal/middleware/cors.go
+// Package middleware internal/middleware/cors.go
 package middleware
 
 import "net/http"

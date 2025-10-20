@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:voltpay/core/auth/provider/email_form_state.dart';
 import 'package:voltpay/core/auth/ui/widget/terms_and_privacy_text.dart';
-import 'package:voltpay/core/router/app_routes.dart';
 import 'package:voltpay/core/utils/buttons/app_buttons.dart';
 import 'package:with_opacity/with_opacity.dart';
 
@@ -42,17 +40,16 @@ class EmailEntryScreen extends ConsumerWidget {
               child: Column(
                 children: <Widget>[
                   // Close row
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: IconButton(
-                      icon: const Icon(Icons.close_rounded),
-                      color: scheme.onSurface,
-                      tooltip: 'Close',
-                      onPressed: () => context.goNamed(AppRoute.obnlastpg.name),
-                    ),
-                  ),
-
-                  const SizedBox(height: 4),
+                  // Align(
+                  //   alignment: Alignment.centerLeft,
+                  //   child: IconButton(
+                  //     icon: const Icon(Icons.close_rounded),
+                  //     color: scheme.onSurface,
+                  //     tooltip: 'Close',
+                  //     onPressed: () => context.goNamed(AppRoute.obnlastpg.name),
+                  //   ),
+                  // ),
+                  const SizedBox(height: 24),
 
                   // Title
                   Align(

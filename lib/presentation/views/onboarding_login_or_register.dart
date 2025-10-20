@@ -145,7 +145,7 @@ class OnboardingLoginOrRegisterState
   Widget build(BuildContext context) {
     super.build(context);
     final ColorScheme scheme = Theme.of(context).colorScheme;
-    final Size size = MediaQuery.of(context).size;
+    final Size _ = MediaQuery.of(context).size;
 
     final Widget topBar = (_idle != null)
         ? AnimatedBuilder(
@@ -168,155 +168,200 @@ class OnboardingLoginOrRegisterState
       onPanDown: (_) => _resetIdle(),
       child: Scaffold(
         backgroundColor: scheme.onSurface,
+        resizeToAvoidBottomInset: true,
         body: SafeArea(
           child: Column(
             children: <Widget>[
               topBar,
+
+              // Scrollable area to prevent "overflow by XXX pixels"
               Expanded(
                 child: Center(
                   child: ConstrainedBox(
                     constraints: const BoxConstraints(maxWidth: 430),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Column(
-                        children: <Widget>[
-                          const SizedBox(height: 8),
+                    child: LayoutBuilder(
+                      builder: (BuildContext context, BoxConstraints viewport) {
+                        final Size size = MediaQuery.of(context).size;
+                        final bool compactH = size.height < 720;
 
-                          // Globe hero (center-left float)
-                          AnimatedBuilder(
-                            animation: Listenable.merge(<Listenable?>[
-                              _enter,
-                              _float,
-                            ]),
-                            builder: (_, _) {
-                              final double dy = _rise.value + _bob.value;
-                              return Opacity(
-                                opacity: _fadeIn.value,
-                                child: Transform.translate(
-                                  offset: Offset(0, dy),
-                                  child: Hero(
-                                    tag: 'globe-hero',
-                                    child: Image.asset(
-                                      'assets/images/voltpay_world.png',
-                                      height: size.height * 0.30,
-                                      fit: BoxFit.contain,
-                                    ),
-                                  ),
-                                ),
-                              );
-                            },
+                        // Clamp hero + title sizes for small screens
+                        final double heroHeight = (size.height * 0.30).clamp(
+                          140.0,
+                          260.0,
+                        );
+                        final double titleFont = (size.width * 0.072).clamp(
+                          20.0,
+                          32.0,
+                        );
+
+                        // Finite bottom gap instead of Spacer (prevents flex asserts)
+                        final double bottomGap = compactH ? 20.0 : 36.0;
+
+                        return SingleChildScrollView(
+                          physics: const BouncingScrollPhysics(),
+                          keyboardDismissBehavior:
+                              ScrollViewKeyboardDismissBehavior.onDrag,
+                          padding: EdgeInsets.only(
+                            left: 20,
+                            right: 20,
+                            top: compactH ? 12 : 20,
+                            // keeps content above system insets/keyboard
+                            bottom:
+                                MediaQuery.of(context).viewInsets.bottom +
+                                (compactH ? 16 : 24),
                           ),
-
-                          const SizedBox(height: 28),
-
-                          // Headline (title case, line breaks like the mock)
-                          Text(
-                            'ONE ACCOUNT CONNECTING MONEY\n ACROSS THE WORLD',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: scheme.surface,
-                              fontSize: 32,
-                              height: 1.15,
-                              fontWeight: FontWeight.w800,
-                              letterSpacing: -0.2,
-                              fontFamily: 'Poppins',
-                              wordSpacing: 0.5,
-                            ),
-                          ),
-
-                          const Spacer(),
-
-                          // Two buttons side-by-side, each wrapped in its own Column
-                          Row(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
                             children: <Widget>[
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.stretch,
-                                  children: <Widget>[
-                                    AppButton(
-                                      text: 'Login',
-                                      customForegroundColor: scheme.onPrimary,
-                                      customBackgroundColor: scheme.primary,
-                                      type: ButtonType.primary,
-                                      size: ButtonSize.medium,
-                                      isRounded: true,
-                                      isFullWidth: true,
-                                      icon: const Icon(
-                                        Icons.login_outlined,
-                                        size: 18,
+                              // Hero
+                              AnimatedBuilder(
+                                animation: Listenable.merge(<Listenable?>[
+                                  _enter,
+                                  _float,
+                                ]),
+                                builder: (_, _) {
+                                  final double dy = _rise.value + _bob.value;
+                                  return Opacity(
+                                    opacity: _fadeIn.value,
+                                    child: Transform.translate(
+                                      offset: Offset(0, dy),
+                                      child: Hero(
+                                        tag: 'globe-hero',
+                                        child: Image.asset(
+                                          'assets/images/voltpay_world.png',
+                                          height: heroHeight,
+                                          fit: BoxFit.contain,
+                                        ),
                                       ),
-                                      onPressed: () {
-                                        _resetIdle();
-                                        context.goNamed(AppRoute.login.name);
-                                      },
                                     ),
-                                  ],
+                                  );
+                                },
+                              ),
+
+                              const SizedBox(height: 16),
+
+                              // Headline
+                              Text(
+                                'ONE ACCOUNT CONNECTING MONEY\n ACROSS THE WORLD',
+                                textAlign: TextAlign.center,
+                                softWrap: true,
+                                maxLines: 4,
+                                style: TextStyle(
+                                  color: scheme.surface,
+                                  fontSize: titleFont,
+                                  height: 1.15,
+                                  fontWeight: FontWeight.w800,
+                                  letterSpacing: -0.2,
+                                  fontFamily: 'Poppins',
+                                  wordSpacing: 0.5,
                                 ),
                               ),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.stretch,
-                                  children: <Widget>[
-                                    AppButton(
-                                      text: 'Register',
-                                      customForegroundColor: scheme.onPrimary,
-                                      customBackgroundColor: scheme.primary,
-                                      type: ButtonType.primary,
-                                      size: ButtonSize.medium,
-                                      isRounded: true,
-                                      isFullWidth: true,
-                                      icon: const Icon(
-                                        Icons.email_outlined,
-                                        size: 18,
-                                      ),
-                                      onPressed: () {
-                                        _resetIdle();
-                                        (widget.onRegister ??
-                                                widget.onGetStarted)
-                                            .call();
-                                        context.goNamed(
-                                          AppRoute.emailEntry.name,
-                                        );
-                                      },
-                                    ),
-                                  ],
-                                ),
+
+                              // ⛔️ REPLACED Spacer() with a finite, responsive gap
+                              SizedBox(height: bottomGap),
+
+                              // Login / Register row (stays on one line; scrolls horizontally if ever too tight)
+                              LayoutBuilder(
+                                builder:
+                                    (BuildContext context, BoxConstraints c) {
+                                      const double spacing = 12;
+                                      final double btnWidth =
+                                          ((c.maxWidth - spacing) / 2).clamp(
+                                            140.0,
+                                            220.0,
+                                          );
+                                      return SingleChildScrollView(
+                                        scrollDirection: Axis.horizontal,
+                                        child: Row(
+                                          children: <Widget>[
+                                            SizedBox(
+                                              width: btnWidth,
+                                              child: AppButton(
+                                                text: 'Login',
+                                                customForegroundColor:
+                                                    scheme.onPrimary,
+                                                customBackgroundColor:
+                                                    scheme.primary,
+                                                type: ButtonType.primary,
+                                                size: ButtonSize.medium,
+                                                isRounded: true,
+                                                isFullWidth: true,
+                                                icon: const Icon(
+                                                  Icons.login_outlined,
+                                                  size: 18,
+                                                ),
+                                                onPressed: () {
+                                                  _resetIdle();
+                                                  context.goNamed(
+                                                    AppRoute.login.name,
+                                                  );
+                                                },
+                                              ),
+                                            ),
+                                            const SizedBox(width: spacing),
+                                            SizedBox(
+                                              width: btnWidth,
+                                              child: AppButton(
+                                                text: 'Register',
+                                                customForegroundColor:
+                                                    scheme.onPrimary,
+                                                customBackgroundColor:
+                                                    scheme.primary,
+                                                type: ButtonType.primary,
+                                                size: ButtonSize.medium,
+                                                isRounded: true,
+                                                isFullWidth: true,
+                                                icon: const Icon(
+                                                  Icons.email_outlined,
+                                                  size: 18,
+                                                ),
+                                                onPressed: () {
+                                                  _resetIdle();
+                                                  (widget.onRegister ??
+                                                          widget.onGetStarted)
+                                                      .call();
+                                                  context.goNamed(
+                                                    AppRoute.emailEntry.name,
+                                                  );
+                                                },
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    },
                               ),
+
+                              // const SizedBox(height: 16),
+                              const SizedBox(height: 48),
+
+                              // Google button
+                              LoginButton(
+                                provider: LoginProviders.google,
+                                onPressed: () async {
+                                  final AuthService auth = ref.read(
+                                    authServiceProvider,
+                                  );
+                                  final UserCredential userCred = await auth
+                                      .signIn(GoogleSignInProvider());
+                                  if (!mounted || userCred.user == null) {
+                                    return;
+                                  }
+                                  if (context.mounted) {
+                                    context.goNamed(AppRoute.service.name);
+                                  }
+                                },
+                                size: ButtonSize.large,
+                                enabled: true,
+                                isLoading: false,
+                                loadingColor: scheme.primary,
+                              ),
+
+                              const SizedBox(height: 22),
                             ],
                           ),
-                          const SizedBox(height: 24),
-                          LoginButton(
-                            provider: LoginProviders.google,
-                            onPressed: () async {
-                              // No coupling here—only calls the service
-                              final AuthService auth = ref.read(
-                                authServiceProvider,
-                              );
-                              final UserCredential userCred = await auth.signIn(
-                                GoogleSignInProvider(),
-                              );
-                              if (!mounted || userCred.user == null) {
-                                return;
-                              }
-                              // navigate (or rely on a listener of authUserProvider)
-                              if (context.mounted) {
-                                context.goNamed(
-                                  AppRoute.service.name,
-                                ); // e.g. the post-verify ServiceScreen
-                              }
-                              // Providers will emit new AuthUserModel automatically.
-                            },
-                            size: ButtonSize.large,
-                            enabled: true,
-                            isLoading: false,
-                            loadingColor: scheme.primary,
-                          ),
-                          const SizedBox(height: 24),
-                        ],
-                      ),
+                        );
+                      },
                     ),
                   ),
                 ),

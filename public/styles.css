@@ -1,243 +1,475 @@
-/* ---- Base / Reset ------------------------------------------------------- */
-:root {
-    color-scheme: light dark;
-    --bg: #ffffff;
-    --text: #0a0a0a;
-    --muted-text: #555;
-    --border: rgba(0, 0, 0, .12);
-    --ink-soft: rgba(0, 0, 0, .06);
-    --link: #0b63f6;
-    --link-visited: #6a38c2;
-    --card: #fff;
-    --pill-bg: rgba(0, 0, 0, .06);
-    --notice-info-bg: #eef5ff;
-    --notice-info-border: #cfe1ff;
-    --notice-warn-bg: #fff6e6;
-    --notice-warn-border: #ffe0a6;
-    --notice-ok-bg: #ecfbf0;
-    --notice-ok-border: #c9f1d5;
+/* ---- Theme Variables ----------------------------------------------------- */
+/* Previous theme (for reference)
+ /* Dark mode */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0c0c0c;
+    --surface: #121212;
+    --overlay: #1a1a1a;
+    --text: #fafafa;
+    --muted-text: #bdbdbd;
+    --primary: #07393c;
+    --border: rgba(255, 255, 255, 0.12);
+    --pill-bg: rgba(255, 255, 255, 0.08);
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    --brand-blue: #0b63f6;
+    --brand-purple: #6a38c2;
+
+    /* Shimmer controls */
+    --shimmer-speed: 48s;
+    /* overall cycle duration */
+    --shimmer-speed-2: 72s;
+    /* secondary layer speed */
+    --shimmer-intensity: 0.12;
+    /* light-mode opacity */
+    --shimmer-intensity-dark: 0.18;
+    /* dark-mode opacity */
+  }
+}
+*/ :root {
+  color-scheme: light dark;
+
+  /* Core brand palette */
+  --brand-blue: #0b63f6;
+  --brand-purple: #6a38c2;
+  --brand-cyan: #00b4ff;
+
+  /* Base light theme */
+  --bg: #f9fbff;
+  --surface: #ffffff;
+  --text: #0a0a0a;
+  --muted-text: #555;
+  --border: rgba(0, 0, 0, 0.12);
 }
 
+/* Dark mode */
 @media (prefers-color-scheme: dark) {
-    :root {
-        --bg: #0c0c0c;
-        --text: #fafafa;
-        --muted-text: #bdbdbd;
-        --border: rgba(255, 255, 255, .16);
-        --ink-soft: rgba(255, 255, 255, .06);
-        --card: #121212;
-        --pill-bg: rgba(255, 255, 255, .08);
-        --notice-info-bg: #0d1b2a;
-        --notice-info-border: #1e3a5f;
-        --notice-warn-bg: #2a1e0a;
-        --notice-warn-border: #5a3c12;
-        --notice-ok-bg: #0f2415;
-        --notice-ok-border: #1d4d2a;
-    }
+  :root {
+    --bg: #0c0d11;
+    --surface: #121318;
+    --text: #f5f7fa;
+    --muted-text: #b5b5b5;
+    --border: rgba(255, 255, 255, 0.12);
+    --link: #4d8eff;
+    --link-hover: #6a38c2;
+    --link-visited: #9a7edb;
+    /* Dark mode badge: teal / pale-cyan for visibility */
+    --badge-fg: #40e0d0;
+    /* turquoise */
+    --badge-bg: rgba(64, 224, 208, 0.18);
+    --badge-bg-hover: rgba(64, 224, 208, 0.28);
+  }
 }
 
 *,
 *::before,
 *::after {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 html {
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    font-size: 16px;
-    scroll-behavior: smooth;
-    line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: 16px;
+  scroll-behavior: smooth;
+  line-height: 1.5;
 }
 
 body {
-    margin: 0;
-    background: var(--bg);
-    color: var(--text);
-    font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-    line-height: 1.65;
+  position: relative;
+  isolation: isolate;
+  min-height: 100vh;
+
+  margin-bottom: auto;
+  margin-left: 0;
+  margin-right: 0;
+  padding: 0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial,
+    sans-serif;
+  line-height: 1.65;
+  font-weight: 400;
+  text-rendering: optimizeLegibility;
+  color: var(--text);
+  background: radial-gradient(
+      circle at 20% 20%,
+      rgba(11, 99, 246, 0.12),
+      transparent 60%
+    ),
+    radial-gradient(
+      circle at 80% 80%,
+      rgba(106, 56, 194, 0.08),
+      transparent 60%
+    ),
+    linear-gradient(180deg, var(--bg) 0%, var(--surface) 100%);
+  transition: background 0.6s ease, color 0.6s ease;
+}
+
+/* --- Shimmer layer (behind content) --- */
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  inset: -10vmax;
+  /* bleed out to avoid edges while moving */
+  z-index: -1;
+  pointer-events: none;
+  will-change: transform, opacity;
+  filter: blur(24px);
+  /* soft glow */
+  opacity: var(--shimmer-intensity);
+}
+
+/* Layer A: broad conic band + radial pulses */
+body::before {
+  background: conic-gradient(
+    from 120deg at 30% 40%,
+    rgba(11, 99, 246, 0.25),
+    rgba(0, 180, 255, 0.18),
+    rgba(106, 56, 194, 0.22),
+    rgba(11, 99, 246, 0.25)
+  );
+  animation: voltpay-float var(--shimmer-speed) linear infinite;
+  transform: translate3d(0, 0, 0) rotate(0deg) scale(1.1);
+  mix-blend-mode: screen;
+  /* subtle lift on light backgrounds */
+}
+
+/* Layer B: faint drifting blotches for parallax */
+body::after {
+  background: radial-gradient(
+      40vmax 40vmax at 15% 20%,
+      rgba(11, 99, 246, 0.25),
+      transparent 65%
+    ),
+    radial-gradient(
+      35vmax 35vmax at 85% 75%,
+      rgba(0, 180, 255, 0.2),
+      transparent 70%
+    ),
+    radial-gradient(
+      30vmax 30vmax at 60% 10%,
+      rgba(106, 56, 194, 0.22),
+      transparent 70%
+    );
+  animation: voltpay-drift var(--shimmer-speed-2) ease-in-out infinite;
+  transform: translate3d(0, 0, 0) scale(1.05);
+}
+
+/* Dark mode tuning */
+@media (prefers-color-scheme: dark) {
+  body::before,
+  body::after {
+    opacity: var(--shimmer-intensity-dark);
+    mix-blend-mode: lighten;
+  }
+}
+
+/* Reduced motion: keep the look, stop movement */
+@media (prefers-reduced-motion: reduce) {
+  body::before,
+  body::after {
+    animation: none !important;
+  }
+}
+
+/* Keyframes use only transform for smooth, battery-friendly GPU anims */
+@keyframes voltpay-float {
+  0% {
+    transform: translate3d(-2%, -1%, 0) rotate(0deg) scale(1.1);
+  }
+
+  50% {
+    transform: translate3d(2%, 1%, 0) rotate(180deg) scale(1.1);
+  }
+
+  100% {
+    transform: translate3d(-2%, -1%, 0) rotate(360deg) scale(1.1);
+  }
+}
+
+@keyframes voltpay-drift {
+  0% {
+    transform: translate3d(0%, 0%, 0) scale(1.05);
+  }
+
+  50% {
+    transform: translate3d(2%, -1%, 0) scale(1.08);
+  }
+
+  100% {
+    transform: translate3d(0%, 0%, 0) scale(1.05);
+  }
 }
 
 /* ---- Brand Header ------------------------------------------------------- */
 .brand-header {
-    display: flex;
-    align-items: center;
-    gap: .65rem;
-    padding: 1rem 0;
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 1.5rem;
 }
 
 .brand-header img {
-    width: 32px;
-    height: 32px;
-    border-radius: 6px;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
 }
 
 .brand-header a {
-    font-weight: 600;
-    font-size: 1.05rem;
-    color: var(--text);
-    text-decoration: none;
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: var(--text);
+  text-decoration: none;
 }
 
 .brand-header a:hover {
-    color: var(--link);
-    text-decoration: underline;
+  color: var(--link);
+  text-decoration: underline;
 }
 
 /* ---- Layout ------------------------------------------------------------- */
 .container {
-    max-width: 840px;
-    margin: 2rem auto;
-    padding: 0 1rem;
+  max-width: 840px;
+  margin: 2rem auto;
+  padding: 0 1rem;
 }
 
 header.page-head {
-    margin-bottom: 1.25rem;
+  margin-bottom: 1.25rem;
 }
 
 .header-sub {
-    color: var(--muted-text);
-    margin: .25rem 0 0;
-    font-size: .95rem;
+  color: var(--muted-text);
+  margin: 0.25rem 0 0;
+  font-size: 0.95rem;
 }
 
 .pill {
-    display: inline-block;
-    padding: .4rem .7rem;
-    border-radius: 999px;
-    background: var(--pill-bg);
-    font-size: .85rem;
+  display: inline-block;
+  padding: 0.4rem 0.7rem;
+  border-radius: 999px;
+  background: var(--pill-bg);
+  font-size: 0.85rem;
 }
 
 /* ---- Typography ---------------------------------------------------------- */
 h1,
 h2,
 h3 {
-    line-height: 1.25;
-    margin: 1.25rem 0 .5rem;
+  line-height: 1.25;
+  margin: 1.25rem 0 0.5rem;
 }
 
 h1 {
-    font-size: clamp(1.6rem, 2vw + 1rem, 2.2rem);
+  font-size: clamp(1.6rem, 2vw + 1rem, 2.2rem);
 }
 
 h2 {
-    font-size: clamp(1.25rem, 1.2vw + .9rem, 1.5rem);
+  font-size: clamp(1.25rem, 1.2vw + 0.9rem, 1.5rem);
 }
 
 h3 {
-    font-size: 1.1rem;
+  font-size: 1.1rem;
 }
 
 p,
 ul,
 ol {
-    margin: .8rem 0;
+  margin: 0.8rem 0;
 }
 
 ul,
 ol {
-    padding-left: 1.25rem;
+  padding-left: 1.25rem;
 }
 
 small,
 .muted {
-    color: var(--muted-text);
+  color: var(--muted-text);
 }
 
 /* ---- Links --------------------------------------------------------------- */
 a {
-    color: var(--link);
-    text-decoration: none;
+  color: var(--link);
+  text-decoration: none;
 }
 
 a:visited {
-    color: var(--link-visited);
+  color: var(--link-visited);
 }
 
 a:hover,
 a:focus {
-    text-decoration: underline;
+  text-decoration: underline;
 }
 
 /* ---- Cards / Sections ---------------------------------------------------- */
 .section {
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 1rem 1.1rem;
-    background: var(--card);
-    margin: 1rem 0;
+  padding: 1.25rem 0;
+}
+.card {
+  background: var(--surface, #fff);
+  border: 1px solid var(--border, rgba(0, 0, 0, 0.12));
+  border-radius: 1rem;
+  padding: 1rem 1.25rem;
+}
+.note {
+  margin: 0 0 0.75rem 0;
+  color: var(--muted-text, #555);
 }
 
-.section h2:first-child {
-    margin-top: 0;
+/* Button styles */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.1rem;
+  border-radius: 0.6rem;
+  border: 1px solid var(--border, rgba(0, 0, 0, 0.12));
+  background-color: var(--badge-bg, var(--surface));
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  text-decoration: none;
+  user-select: none;
+}
+
+/* ----- VoltPay primary button ----- */
+.btn-primary {
+  /* Brand “badge” gradient background */
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--brand-purple, #6a38c2) 80%, #4b2fa0),
+    color-mix(in srgb, var(--link, #0b63f6) 75%, #004aad)
+  );
+  border-color: var(--link, #0b63f6);
+  box-shadow: 0 3px 8px rgba(11, 99, 246, 0.25);
+}
+
+.btn-primary:hover {
+  filter: brightness(1.07);
+  box-shadow: 0 4px 10px rgba(11, 99, 246, 0.35);
+}
+
+.btn-primary:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 6px rgba(11, 99, 246, 0.25);
+}
+
+/* ----- Ghost button ----- */
+.btn-ghost {
+  background: transparent;
+  color: var(--link, #0b63f6);
+  border-color: var(--border, rgba(0, 0, 0, 0.12));
+}
+.btn-ghost:hover {
+  background: var(--pill-bg, rgba(0, 0, 0, 0.06));
+}
+
+/* ----- Dark mode refinement ----- */
+@media (prefers-color-scheme: dark) {
+  .btn-primary {
+    background: linear-gradient(
+      145deg,
+      color-mix(in srgb, var(--link, #4d8eff) 80%, black),
+      color-mix(in srgb, var(--brand-purple, #6a38c2) 70%, black)
+    );
+    box-shadow: 0 3px 10px rgba(11, 99, 246, 0.35);
+  }
+
+  .btn-ghost:hover {
+    background: var(--pill-bg, rgba(255, 255, 255, 0.08));
+  }
+}
+
+/* Horizontal alignment that wraps on small screens */
+.actions {
+  display: flex;
+  flex-wrap: wrap; /* <-- prevents overlap */
+  gap: 0.75rem 1rem; /* row-gap / column-gap */
+  margin: 1.5rem 0;
+  padding: 1rem;
+  border-radius: 1rem;
+}
+.actions-left {
+  justify-content: flex-start;
+}
+
+/* Optional: stack earlier on very small screens */
+@media (max-width: 420px) {
+  .btn {
+    width: 100%;
+    min-width: 0;
+  } /* full-width buttons on tiny devices */
 }
 
 /* ---- Notices ------------------------------------------------------------- */
 .notice {
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: .8rem .9rem;
-    margin: 1rem 0;
-    background: var(--ink-soft);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.8rem 0.9rem;
+  margin: 1rem 0;
+  background: var(--ink-soft);
 }
 
 .notice.info {
-    background: var(--notice-info-bg);
-    border-color: var(--notice-info-border);
+  background: var(--notice-info-bg);
+  border-color: var(--notice-info-border);
 }
 
 .notice.warn {
-    background: var(--notice-warn-bg);
-    border-color: var(--notice-warn-border);
+  background: var(--notice-warn-bg);
+  border-color: var(--notice-warn-border);
 }
 
 .notice.ok {
-    background: var(--notice-ok-bg);
-    border-color: var(--notice-ok-border);
+  background: var(--notice-ok-bg);
+  border-color: var(--notice-ok-border);
 }
 
 /* ---- Meta / Footer ------------------------------------------------------- */
 .meta {
-    display: flex;
-    gap: .75rem;
-    flex-wrap: wrap;
-    align-items: center;
-    margin-top: .5rem;
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-top: 0.5rem;
 }
 
 footer.page-foot {
-    margin: 2rem 0 3rem;
-    padding-top: 1rem;
-    border-top: 1px dashed var(--border);
-    color: var(--muted-text);
-    font-size: .95rem;
+  margin: 2rem 0 3rem;
+  padding-top: 1rem;
+  border-top: 1px dashed var(--border);
+  color: var(--muted-text);
+  font-size: 0.95rem;
 }
 
 /* ---- Table of contents (optional) --------------------------------------- */
 .toc {
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: .8rem 1rem;
-    background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0.8rem 1rem;
+  background: var(--card);
 }
 
 .toc h3 {
-    margin-top: .25rem;
-    margin-bottom: .5rem;
+  margin-top: 0.25rem;
+  margin-bottom: 0.5rem;
 }
 
 .toc ul {
-    margin: 0;
+  margin: 0;
 }
 /* 2) Ensure readable text inside cards/notice, in both light/dark */
 .card,
 .card-bg,
 .notice {
   background: var(--card);
-  color: var(--text);              /* force text color on light card bg */
+  color: var(--text); /* force text color on light card bg */
 }
 
 /* 3) Notice background that adapts to theme without washing text */
@@ -250,33 +482,33 @@ footer.page-foot {
 /* ---- Accessibility helpers ---------------------------------------------- */
 sr-only,
 .sr-only {
-    position: absolute !important;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 /* ---- Print tweaks -------------------------------------------------------- */
 @media print {
-    .container {
-        max-width: 100%;
-        margin: 0;
-        padding: 0;
-    }
+  .container {
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+  }
 
-    a {
-        text-decoration: underline;
-    }
+  a {
+    text-decoration: underline;
+  }
 
-    .notice {
-        -webkit-print-color-adjust: exact;
-        print-color-adjust: exact;
-    }
+  .notice {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
 }
 
 /* ---- Brand tokens ------------------------------------------------------- */
@@ -287,22 +519,22 @@ sr-only,
   --bg: #ffffff;
   --text: #0a0a0a;
   --muted-text: #5f6b77;
-  --border: rgba(0, 0, 0, .12);
-  --ink-soft: rgba(0, 0, 0, .04);
+  --border: rgba(0, 0, 0, 0.12);
+  --ink-soft: rgba(0, 0, 0, 0.04);
   --card: #ffffff;
 
   /* VoltPay brand */
-  --brand: #26A96C;          /* VoltPay Green */
-  --brand-ink: #1f8b59;      /* Hover/darkened */
+  --brand: #26a96c; /* VoltPay Green */
+  --brand-ink: #1f8b59; /* Hover/darkened */
   --brand-contrast: #0a0a0a; /* Text on brand surfaces (we keep dark for accessibility) */
-  --accent: #0b63f6;         /* keep as secondary/accent for links */
+  --accent: #0b63f6; /* keep as secondary/accent for links */
 
   /* Links */
   --link: var(--accent);
   --link-visited: #6a38c2;
 
   /* Pills / notices */
-  --pill-bg: rgba(0, 0, 0, .06);
+  --pill-bg: rgba(0, 0, 0, 0.06);
   --notice-info-bg: #eef5ff;
   --notice-info-border: #cfe1ff;
   --notice-warn-bg: #fff6e6;
@@ -313,7 +545,7 @@ sr-only,
   /* Layout helpers */
   --radius: 14px;
   --radius-sm: 10px;
-  --shadow: 0 4px 18px rgba(0,0,0,.08);
+  --shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -321,15 +553,15 @@ sr-only,
     --bg: #0c0c0c;
     --text: #f6f7f8;
     --muted-text: #b9c0c7;
-    --border: rgba(255,255,255,.16);
-    --ink-soft: rgba(255,255,255,.06);
+    --border: rgba(255, 255, 255, 0.16);
+    --ink-soft: rgba(255, 255, 255, 0.06);
     --card: #121212;
 
-    --brand: #26A96C;        /* keep brand consistent in dark */
-    --brand-ink: #5cd297;    /* slight lift on hover in dark */
+    --brand: #26a96c; /* keep brand consistent in dark */
+    --brand-ink: #5cd297; /* slight lift on hover in dark */
     --brand-contrast: #0b0b0b;
 
-    --pill-bg: rgba(255,255,255,.08);
+    --pill-bg: rgba(255, 255, 255, 0.08);
     --notice-info-bg: #0d1b2a;
     --notice-info-border: #1e3a5f;
     --notice-warn-bg: #2a1e0a;
@@ -339,13 +571,156 @@ sr-only,
   }
 }
 
+/* ---- Nav / header --------------------------------------------------------- */
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.875rem 0;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 1.25rem;
+}
+
+/* Notice bar (optional) */
+.notice-bar {
+  display: grid;
+  place-items: center;
+  min-height: 36px;
+  background: var(--notice-bg);
+  color: var(--notice-fg);
+  font-size: 0.95rem;
+  padding: 4px 12px;
+}
+
+.notice-bar a {
+  color: #fff;
+  text-decoration: underline;
+}
+
+/* ===== Your NAV base (kept, with minor tweaks) ===== */
+.nav {
+  height: 50px;
+  width: 100%;
+
+  position: relative;
+}
+
+.nav > .nav-header {
+  display: inline-flex;
+  align-items: center;
+  height: 50px;
+}
+
+.nav > .nav-header > .nav-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 20px;
+  color: #fff;
+  padding: 10px 8px;
+  text-decoration: none;
+}
+
+.logo {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.nav > .nav-btn {
+  display: none;
+}
+
+.nav > .nav-links {
+  display: inline;
+  float: right;
+  font-size: 18px;
+}
+
+.nav > .nav-links > a {
+  display: inline-block;
+  padding: 13px 10px;
+  text-decoration: none;
+  color: #efefef;
+  border-radius: 6px;
+}
+
+.nav > .nav-links > a:hover {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.nav > #nav-check {
+  display: none;
+}
+
+/* ===== Mobile ===== */
+@media (max-width: 600px) {
+  .nav > .nav-btn {
+    display: inline-block;
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+
+  .nav > .nav-btn > label {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    padding: 13px;
+    cursor: pointer;
+  }
+
+  /* 3 lines (hamburger) */
+  .nav > .nav-btn > label > span {
+    display: block;
+    width: 24px;
+    height: 0;
+    border-top: 2px solid #eee;
+    margin: 5px 0;
+  }
+
+  .nav > .nav-btn > label:hover,
+  .nav #nav-check:checked ~ .nav-btn > label {
+    background-color: rgba(0, 0, 0, 0.3);
+  }
+
+  .nav > .nav-links {
+    position: absolute;
+    display: block;
+    width: 100%;
+    background-color: var(--surface-2);
+    height: 0;
+    transition: all 0.3s ease-in;
+    overflow-y: hidden;
+    top: 50px;
+    left: 0;
+  }
+
+  .nav > .nav-links > a {
+    display: block;
+    width: 100%;
+    color: #efefef;
+    padding: 14px 16px;
+    border-radius: 0;
+  }
+
+  .nav > #nav-check:not(:checked) ~ .nav-links {
+    height: 0;
+  }
+
+  .nav > #nav-check:checked ~ .nav-links {
+    height: calc(100vh - 50px);
+    overflow-y: auto;
+  }
+}
+
 /* ---- Header / brand lockup --------------------------------------------- */
 .brand-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: .75rem;
-  padding: .875rem 0;
+  gap: 0.75rem;
+  padding: 0.875rem 0;
   border-bottom: 1px solid var(--border);
   margin-bottom: 1.25rem;
 }
@@ -353,12 +728,14 @@ sr-only,
 .brand {
   display: inline-flex;
   align-items: center;
-  gap: .6rem;
+  gap: 0.6rem;
   text-decoration: none;
   color: var(--text);
 }
 
-.brand:hover { text-decoration: none; }
+.brand:hover {
+  text-decoration: none;
+}
 
 .brand .logo {
   width: 36px;
@@ -369,8 +746,8 @@ sr-only,
 
 .brand .wordmark {
   font-weight: 700;
-  font-size: 1.05rem;
-  letter-spacing: .2px;
+  font-size: 2.05rem;
+  letter-spacing: 0.2px;
 }
 
 /* Optional: slim top nav for future links */
@@ -379,11 +756,13 @@ sr-only,
   gap: 1rem;
 }
 .topnav a {
-  font-size: .95rem;
+  font-size: 0.95rem;
   color: var(--muted-text);
   text-decoration: none;
 }
-.topnav a:hover { color: var(--text); }
+.topnav a:hover {
+  color: var(--text);
+}
 
 /* ---- Hero / page header ------------------------------------------------- */
 .page-head {
@@ -391,8 +770,8 @@ sr-only,
 }
 .header-sub {
   color: var(--muted-text);
-  margin: .35rem 0 0;
-  font-size: .95rem;
+  margin: 0.35rem 0 0;
+  font-size: 0.95rem;
 }
 
 /* ---- Buttons ------------------------------------------------------------ */
@@ -401,25 +780,31 @@ sr-only,
   border: 1px solid var(--border);
   background: var(--card);
   color: var(--text);
-  padding: .7rem 1rem;
+  padding: 0.7rem 1rem;
   border-radius: 999px;
   font-weight: 600;
   cursor: pointer;
-  transition: transform .04s ease, background .2s ease, border-color .2s ease;
+  transition: transform 0.04s ease, background 0.2s ease, border-color 0.2s ease;
 }
-.btn:active { transform: translateY(1px); }
+.btn:active {
+  transform: translateY(1px);
+}
 
 .btn-primary {
   background: var(--brand);
   color: var(--brand-contrast);
   border-color: transparent;
 }
-.btn-primary:hover { background: var(--brand-ink); }
+.btn-primary:hover {
+  background: var(--brand-ink);
+}
 
 .btn-ghost {
   background: transparent;
 }
-.btn-ghost:hover { background: var(--ink-soft); }
+.btn-ghost:hover {
+  background: var(--ink-soft);
+}
 
 /* ---- Cards / sections --------------------------------------------------- */
 .section {
@@ -430,15 +815,23 @@ sr-only,
   margin: 1rem 0;
   box-shadow: var(--shadow);
 }
-.section h2:first-child { margin-top: 0; }
+.section h2:first-child {
+  margin-top: 0;
+}
 
 /* ---- Simple grid -------------------------------------------------------- */
 .grid {
   display: grid;
   gap: 1rem;
 }
-.grid-2 { grid-template-columns: repeat(2, minmax(0,1fr)); }
-@media (max-width: 720px) { .grid-2 { grid-template-columns: 1fr; } }
+.grid-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+@media (max-width: 720px) {
+  .grid-2 {
+    grid-template-columns: 1fr;
+  }
+}
 
 /* ---- Footer ------------------------------------------------------------- */
 .page-foot {
@@ -446,7 +839,7 @@ sr-only,
   padding-top: 1rem;
   border-top: 1px dashed var(--border);
   color: var(--muted-text);
-  font-size: .95rem;
+  font-size: 0.95rem;
   display: flex;
   justify-content: space-between;
   gap: 1rem;
@@ -455,21 +848,93 @@ sr-only,
 
 /* keep the rest of your reset/typography as-is */
 /* ---- Typography --------------------------------------------------------- */
-h1, h2, h3 {
+h1,
+h2,
+h3 {
   line-height: 1.25;
-  margin: 1.25rem 0 .5rem;
+  margin: 1.25rem 0 0.5rem;
 }
-h1 { font-size: clamp(1.6rem, 2vw + 1rem, 2.2rem); }
-h2 { font-size: clamp(1.25rem, 1.2vw + .9rem, 1.5rem); }
-h3 { font-size: 1.1rem; }
-p, ul, ol {
-  margin: .8rem 0;
+h1 {
+  font-size: clamp(1.6rem, 2vw + 1rem, 2.2rem);
+}
+h2 {
+  font-size: clamp(1.25rem, 1.2vw + 0.9rem, 1.5rem);
+}
+h3 {
+  font-size: 1.1rem;
+}
+p,
+ul,
+ol {
+  margin: 0.8rem 0;
 }
 
-ul, ol { padding-left: 1.25rem; }
-small, .muted { color: var(--muted-text); }
+ul,
+ol {
+  padding-left: 1.25rem;
+}
+small,
+.muted {
+  color: var(--muted-text);
+}
 /* ---- Links -------------------------------------------------------------- */
 a {
   color: var(--link);
   text-decoration: none;
+}
+
+.security-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--badge-fg);
+  background: var(--badge-bg);
+  padding: 0.25rem 0.6rem;
+  border-radius: 1rem;
+  margin-left: 0.5rem;
+  vertical-align: middle;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.security-badge:hover {
+  background: var(--badge-bg-hover);
+}
+.security-badge .lock-icon {
+  width: 1rem;
+  height: 1rem;
+}
+
+/* ---------- Responsive Grid ---------- */
+.grid {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.grid-2 {
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+/* ---------- Section + Card Structure ---------- */
+.section {
+  padding: 2rem 0;
+}
+.section-header {
+  margin-bottom: 1rem;
+}
+
+.card {
+  background: var(--surface, #fff);
+  border: 1px solid var(--border, rgba(0, 0, 0, 0.12));
+  border-radius: 1rem;
+  padding: 1.5rem;
+}
+
+/* Headings and paragraphs inside grid */
+#features h3 {
+  margin: 0 0 0.5rem;
+}
+#features p {
+  margin: 0;
+  color: var(--muted-text, #555);
 }
